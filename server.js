@@ -7,6 +7,7 @@
 //create server
 let port = process.env.PORT || 8000;
 let express = require('express');
+const { isNullOrUndefined } = require('util');
 let app = express();
 let server = require('http').createServer(app).listen(port, function(){
   console.log('Server is listening at port: ', port);
@@ -25,12 +26,8 @@ let io = require('socket.io')(server);
 const Monster = require("./modules/monsters").Monster;
 const monsters = require("./modules/monsters").monsters;
 let players = []; // holds all current players, their parties, their stats, etc.
-let battleStepTime = 2000; //interval it takes each battle step to take -- TODO, client speed (array of events?)
+let battleStepTime = 1000; //interval it takes each battle step to take -- TODO, client speed (array of events?)
 
-//just for testing
-// let player1;
-// let party1 = [];
-// let party2 = [];
 let testLobby = "testLobby";
 
 //
@@ -80,6 +77,19 @@ inputs.on('connection', (socket) => {
     }
   });
 
+  //when player sells a monster
+  socket.on("sellMonster", (data) => {
+    for (let player of players) {
+      if (player.id == socket.id){
+        player.party = data.party;
+        player.gold += data.level;
+        // player.gold += 1;
+        console.log(player.id + "has " + player.gold + " left");
+        socket.emit("updateGold", {gold: player.gold});
+      }
+    }
+  });
+
   //on end turn from market, signals to server we're ready to battle
   //for test, just going to put in room on here instead of joining lobby at start, TODO
   socket.on("readyUp", (data) => {
@@ -88,7 +98,6 @@ inputs.on('connection', (socket) => {
       if (player.id == socket.id){
         player.ready = true;
         player.party = data.party;
-        //player.battleParty = data.party; //to hold the party that gets changed in battle
         player.battleParty = []; //i still don't understand references...
         for (let i = 0; i < data.party.length; i++){
           if (data.party[i] == null){
@@ -97,12 +106,14 @@ inputs.on('connection', (socket) => {
             player.battleParty[i] = new Monster(data.party[i]);
           }
         }
-        if (player.lobby == undefined){ //join a lobby if not in one already
+
+        //join a lobby if not in one already
+        if (player.lobby == undefined){ 
           player.lobby = testLobby;
           socket.join(player.lobby);
-          // console.log(io.sockets.adapter.rooms.get(player.lobby)); //map
         }
-        //TODO server check both and send to battle
+
+        // check to see if both are ready, if so, send to battle
         let lobby = io.sockets.adapter.rooms.get(player.lobby);
         console.log(lobby);
         if (lobby.size == 2){ //size instead of length because its a set
@@ -122,7 +133,7 @@ inputs.on('connection', (socket) => {
               }
             }
           }
-          //TODO make less clunky...
+          //TODO make less clunky... trims up the parties for better battle display
           if (enemyIsReady){
             //remove nulls from party so battle step works
             let party1 = player.battleParty;
@@ -136,20 +147,20 @@ inputs.on('connection', (socket) => {
                 }
               }
             }
-            for (let i = party1.length - 1; i > 0; i--){
+            console.log("before splice");
+            console.log(party1);
+            for (let i = party1.length - 1; i >= 0; i--){
               if (party1[i] == null){
                 party1.splice(i, 1);
               }
             }
             //reset indexes
+            console.log("before index");
+            console.log(party1);
             for (let i = 0; i < party1.length; i++){
               party1[i].index = i;
             }
-            // for (let [i, slot] of party1.entries()){
-            //   if (slot == null){
-            //     party1.splice(i, 1);
-            //   }
-            // }
+
             let party2 = enemy.battleParty;
             for(let i = 0; i < party2.length; i++){
               if (party2[i] == null){
@@ -161,7 +172,7 @@ inputs.on('connection', (socket) => {
                 }
               }
             }
-            for (let i = party2.length - 1; i > 0; i--){
+            for (let i = party2.length - 1; i >= 0; i--){
               if (party2[i] == null){
                 party2.splice(i, 1);
               }
@@ -170,14 +181,6 @@ inputs.on('connection', (socket) => {
             for (let i = 0; i < party2.length; i++){
               party2[i].index = i;
             }
-            // console.log("party 1");
-            // console.log(party1);
-            // console.log("party 2");
-            // console.log(party2);
-            // console.log("player party");
-            // console.log(player.party);
-            // console.log("player battleParty");
-            // console.log(player.battleParty);
 
             let battle = [{id: player.id, party: party1}, {id: enemy.id, party: party2}];
             io.to(player.lobby).emit("startBattle", battle);
@@ -314,12 +317,3 @@ function gameOver(player, lobby){
     }
   }
 }
-// function randomParty(player){
-//   let party = [];
-//   for (let i = 0; i < 5; i++){
-//     let RandomMonster = monsters[Math.floor(Math.random()*monsters.length)];
-//     party.push(new RandomMonster({index: i}));
-//     // party.push(new RandomMonster({index: i, slot: {x: player.slots[i], y: player.slotY}}));
-//   }
-//   return party;
-// }

@@ -40,6 +40,7 @@ socket.on('goToMarket', (data) => {
   party = data.party; //refreshes after battle
   
   if (doneSetup){
+    slots = [{sX: marketSlots, sY: marketSlotY, m:party}, {sX: hireSlots, sY: hireSlotY, m: hires}]; //array for all draggable slots, with appropriate Ys
     refreshButt.show();
     readyButt.show();
     showEverything();
@@ -66,6 +67,8 @@ socket.on('newHires', (data) => {
 socket.on('updateGold', (data) => {
   gold = data.gold;
   showEverything();
+  //showing ready button here because it's after first hire
+  readyButt.show();
 });
 
 //if other player isn't ready for battle, show waiting
@@ -104,8 +107,6 @@ socket.on('battleAftermath', (data) => {
       enemyParty = client.party;
     }
   }
-  // party = data.battle;
-  // enemyParty = data.enemyParty;
   showEverything();
 });
 
@@ -119,21 +120,21 @@ socket.on('battleOver', (data) => {
       enemyParty = client.party;
     }
   }
-  // party = data.party;
-  // enemyParty = data.enemyParty;
-  showEverything();
-  // showParties();
+  // showEverything();
   push();
   textSize(80);
   if (data.result == "win") {
+    showEverything();
     fill(0, 250, 50);
     text("WIN", width / 2, 3 * height / 6);
   } else if (data.result == "loss") {
     hp = data.hp;
-    showUI();
+    // showUI();
+    showEverything();
     fill(200, 0, 0);
     text("LOSS", width / 2, 3 * height / 6);
   } else {
+    showEverything();
     fill(230);
     text("TIE", width / 2, 3 * height / 6);
   }
@@ -148,15 +149,6 @@ socket.on('battleOver', (data) => {
 // game end message
 socket.on('gameOver', (data) => {
   console.log('gameOver: ' + data.result);
-  // for (let client of data.battle){
-  //   if (client.id == socket.id){
-  //     party = client.party;
-  //   } else {
-  //     enemyParty = client.party;
-  //   }
-  // }
-  // showEverything();
-  // showParties();
   push();
   textSize(80);
   background(20);
@@ -195,8 +187,11 @@ let marketSlots = []; //where party is in market
 let hireSlots = []; //where available monsters in market are
 let battleSlotY, marketSlotY, hireSlotY; //center height of monsters
 let slots = []; //array for all draggable slots, with appropriate Ys
+let sellSlot; //the slot to drag to sell
 let assetSize; //size to display monster pngs
 let r; //radius of image
+// let slotBuffer; //spacing between slots
+// let slotSize; //total X size of slot + space
 let playerStatY; //height of top stats
 let refreshButt, readyButt; // market buttons
 let waitingForBattle = false; //when ready but opponent isn't
@@ -209,7 +204,7 @@ let hoverCheckTime = 70; //timer before hover triggers
 //
 
 function setup(){
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth - 5, windowHeight - 5); //TODO better way of ensuring scrollbars don't show up
   // createCanvas(1920, 1080);
   background(82,135,39);
 
@@ -217,29 +212,28 @@ function setup(){
   rectMode(CENTER);
   imageMode(CENTER);
   textAlign(CENTER, CENTER);
-  battleSlotY = 6 * height / 8;
-  marketSlotY = 3 * height / 8;
-  hireSlotY = 5 * height / 8;
-  battleSlots = [-(width / 12), -(2 * width / 12), -(3 * width / 12), -(4 * width / 12), -(5 * width / 12)];
-  marketSlots = [8 * width / 13, 7 * width / 13, 6 * width / 13, 5 * width / 13, 4 * width / 13];
-  hireSlots = [4 * width / 13, 5 * width / 13, 6 * width / 13, 7 * width / 13, 8 * width / 13, 9 * width / 13, 10 * width / 13];
-  assetSize = width/14;
-  r = assetSize / 2; //radius of image
-  playerStatY = height / 20;
+  battleSlotY = 6 * height / 8; //y position of party in battle
+  marketSlotY = 3 * height / 8; //y position of party in market
+  hireSlotY = 5 * height / 8; //y position of hires and items
+  playerStatY = height / 20; //y position of top stats
+  assetSize = width / 11; //size of slots and images
+  r = assetSize / 2; //radius of image, for checking interaction range
+  let slotBuffer = assetSize / 20; //space between slots
+  let slotSize = assetSize + slotBuffer; //total X size of slot + space
+  let spacing = slotSize / 3; // to prevent battle positions from going offscreen
+  battleSlots = [-(slotSize - spacing), -(2 * slotSize - spacing), -(3 * slotSize - spacing), -(4 * slotSize - spacing), -(5 * slotSize - spacing)]; // going to be translated to center and flipped
+  marketSlots = [6 * slotSize, 5 * slotSize, 4 * slotSize, 3 * slotSize, 2 * slotSize];
+  hireSlots = [2 * slotSize, 3 * slotSize, 4 * slotSize, 5 * slotSize, 6 * slotSize, 7 * slotSize + spacing, 8 * slotSize + spacing]; //items have slight gap
   slots = [{sX: marketSlots, sY: marketSlotY, m:party}, {sX: hireSlots, sY: hireSlotY, m: hires}]; //array for all draggable slots, with appropriate Ys
-  // slots = [{sX: battleSlots, sY: battleSlotY, m: party}, {sX: marketSlots, sY: marketSlotY, m:party}, {sX: hireSlots, sY: hireSlotY, m: hires}]; //array for all draggable slots, with appropriate Ys
+  sellSlot = {x: width/2, y: 7 * height / 8};
 
   //make UI
-  //stepButt = createButton('STEP').position(width/2 - 50, 5 * height / 6).mousePressed(step);
   refreshButt = createButton('REFRESH HIRES').position(width / 4, 5 * height / 6).mousePressed(()=>{socket.emit("refreshHires", {availableHireNum: availableHireNum})}); //if gold left, replaces hires with random hires
   readyButt = createButton('READY UP').position(3 * width / 4, 5 * height / 6).mousePressed(()=>{socket.emit("readyUp", {party: party})}); //sends msg that we're ready to battle
+  readyButt.hide(); //hiding until there's a party to send to battle
 
   //monsters after loadImage
-  monsterAssets = {
-    beholder: beholder,
-    bulette: bulette, 
-    skeleton: skeleton,
-  };
+  loadMonsterAssets();
 
   //display
   doneSetup = true;
@@ -261,12 +255,10 @@ function draw(){
     let isHovering = false;
     for (let [i, slotX] of s.sX.entries()){
       if (mouseX > slotX - r && mouseX < slotX + r && mouseY > s.sY - r && mouseY < s.sY + r) {
-        // console.log("hovering");
         isHovering = true;
         hoverTimer++;
         //if over slot and timesUp and underlying exists then move underlying
         if (hoverTimer > hoverCheckTime){
-          // console.log("trying to push");
           //if spot isn't empty, try to move left, if can't, move right
           if(s.m[i] !== null){
             console.log("trying to push");
@@ -310,9 +302,9 @@ function mouseReleased() {
   if (pickedUpSomething) {
     //on release, check for slot, gold, monster, etc. -- can only release into party, else it just snaps back
     let needsToReturn = true;
-    for (let [i, slotX] of marketSlots.entries()){
+    for (let [i, slotX] of marketSlots.entries()){ //TODO lots of redundant code here
+      //in bounds and empty slot, drop in
       if (party[i] == null && mouseX > slotX - r && mouseX < slotX + r && mouseY > marketSlotY - r && mouseY < marketSlotY + r) {
-        //in bounds and empty slot, drop in
         if (dragged.party == hires && gold >= 3){ //check if buying or just rearranging
           party[i] = dragged.monster;
           party[i].index = i;
@@ -324,8 +316,34 @@ function mouseReleased() {
           party[i].index = i;
           needsToReturn = false;
         }
+      } 
+      //if same monster, upgrade and combine when drop
+      else if (party[i] !== null && party[i].name == dragged.monster.name && mouseX > slotX - r && mouseX < slotX + r && mouseY > marketSlotY - r && mouseY < marketSlotY + r) {
+        if (dragged.party == hires && gold >= 3){
+          upgradeMonster(i, dragged.monster.currentUpgrades); //TODO should do on server side...
+          needsToReturn = false;
+          socket.emit("hireMonster", {party: party});
+        } else if (dragged.party !== hires) {
+          upgradeMonster(i, dragged.monster.currentUpgrades); //TODO should do on server side...
+          needsToReturn = false;
+        }
       }
     }
+    //check for sell slot drop
+    if (dragged.party == party && mouseX > sellSlot.x - r && mouseX < sellSlot.x + r && mouseY > sellSlot.y - r && mouseY < sellSlot.y + r) {
+      let notLast = false; // prevents from selling last party member
+      for (let i = 0; i < party.length; i++){
+        if (party[i] !== null){
+          notLast = true;
+        }
+      }
+      if (notLast) {
+        socket.emit("sellMonster", {party: party, level: dragged.monster.level}); //TODO sell amount equal to level?
+        needsToReturn = false;
+      }
+    }
+
+    //send back to slot if dropped over nothing
     if (needsToReturn) {
       dragged.party[dragged.index] = dragged.monster;
     }
@@ -342,7 +360,7 @@ function pushParty(p, i){ //party, index
     let [canPushLeft, numToPushLeft] = checkPush(p, i, 1, dir);
     if (canPushLeft) {
       for (let j = i + numToPushLeft; j > i; j--){ //could simplify this with dir, but overoptimization
-        p[j] = p[j-1]; //TODO check... is this going to just be a reference...?
+        p[j] = p[j-1];
         p[j].index = j;
       }
       p[i] = null;
@@ -377,13 +395,6 @@ function checkPush(p, i, num, dir) {
     return [false, 0];
   }
 }
-
-// the main battle function -- steps through each stage of the battle
-function step(){
-  //server applies hits
-  socket.emit("battleStep");
-}
-
 
 //
 //  SHOW FUNCTIONS
@@ -438,13 +449,130 @@ function showParty(monster, isMyParty){
       //x = -x;
       push();
       scale(-1, 1);
-      // image(monster.asset, x, y, size, size);
       image(monsterAssets[monster.name], x, y, size, size);
       pop();
       x = -x; //so text flips
   } else {
       image(monsterAssets[monster.name], x, y, size, size);
   }
+
+  let powerX = x - xOffset;
+  let hpX = x + xOffset;
+  let statY = y + yOffset;
+  let lvlX = x - xOffset;
+  let upgradeX = x;
+  let lvlY = y - yOffset;
+  let upgradeSize = xOffset/2;
+  //asset
+  strokeWeight(2);
+  stroke(0);
+  let statText = 5 * statSize / 6;
+  textSize(statText);
+  //power
+  fill(100);
+  rect(powerX, statY, statSize); 
+  fill(255);
+  text(monster.currentPower, powerX, statY + (statText / 12)); //weirdly not in center??
+  //hp
+  fill(200, 0, 0);
+  rect(hpX, statY, statSize);
+  fill(255);
+  text(monster.currentHP, hpX, statY + (statText / 12));
+  //level
+  fill(230,206,38);
+  textAlign(RIGHT, BOTTOM);
+  textSize(statText/2);
+  text("lvl.", lvlX, lvlY);
+  textSize(statText);
+  text(monster.level, lvlX + statText/2, lvlY + statText/4);
+  //upgrades
+  for (let i = 0; i < monster.nextLevel; i++){
+    if (monster.currentUpgrades > i){
+      fill(230,206,38);
+    } else {
+      fill(50);
+    }
+    rect(upgradeX + (upgradeSize * i), lvlY + statText/2, upgradeSize);
+  }
+  pop();
+}
+
+function showUI(){
+  push();
+
+  //upper left stats
+  textSize(40);
+  fill(249,224,50);
+  text(gold, width / 10, playerStatY);
+  fill(217,65,60);
+  text(hp, 2 * width / 10, playerStatY);
+  fill(30,161,202);
+  text(turn, 3 * width / 10, playerStatY);
+
+  //show current state in top right corner
+  textSize(50);
+  fill(0);
+  text(state, width - (width / 10), playerStatY);
+
+  //if waiting, show under button
+  if (waitingForBattle){
+    textSize(25);
+    text("Waiting For Opponent", 3 * width / 4, (5 * height / 6) + 50);
+  }
+  
+  pop();
+}
+
+//shows the party slots, market slots, and hires, regardless of if they're filled or not
+function showSlots(){
+  push();
+  noStroke();
+  fill(230, 150);
+
+  if (state == "market") {
+    for (let i = 0; i < 5; i++){//party in market
+      rect(marketSlots[i], marketSlotY, assetSize);
+    }
+    for (let i = 0; i < availableHireNum; i++) { //hires, variable based on tier reached
+      rect(hireSlots[i], hireSlotY, assetSize);
+      if (hires[i] !== null) {
+        showMonster(hires[i]);
+      }
+    }
+    for (let i = 1; i < 3; i++){ //items, same array as hires -- don't like it, but that's how SAP looks
+      rect(hireSlots[hireSlots.length - i], hireSlotY, assetSize);
+    }
+
+    //sell slot
+    rect(sellSlot.x, sellSlot.y, assetSize);
+    textSize(assetSize /4);
+    fill(0);
+    text("SELL", sellSlot.x, sellSlot.y);
+
+  } else if (state == "battle") {
+    translate(width/2, 0); //only translating in battle to make flip easier
+    for (let i = 0; i < 5; i++){
+      rect(battleSlots[i], battleSlotY, assetSize);
+    }
+    for (let i = 0; i < 5; i++){
+      rect(-battleSlots[i], battleSlotY, assetSize);
+    }
+  }
+
+  pop();
+}
+
+//shows hires and stats
+function showMonster(monster){
+  push();
+  let x = hireSlots[monster.index];
+  let y = hireSlotY;
+  let size = assetSize;
+  let xOffset = (1 * size / 5);
+  let yOffset = (3 * size / 4);
+  let statSize = size / 3;
+
+  image(monsterAssets[monster.name], x, y, size, size);
 
   let powerX = x - xOffset;
   let hpX = x + xOffset;
@@ -469,59 +597,31 @@ function showParty(monster, isMyParty){
   pop();
 }
 
-function showUI(){
-  push();
-  //upper left stats
-  textSize(40);
-  fill(249,224,50);
-  text(gold, width / 10, playerStatY);
-  fill(217,65,60);
-  text(hp, 2 * width / 10, playerStatY);
-  fill(30,161,202);
-  text(turn, 3 * width / 10, playerStatY);
-
-  //show current state in top right corner
-  textSize(50);
-  fill(0);
-  text(state, width - (width / 10), playerStatY);
-
-  //if waiting, show under button
-  if (waitingForBattle){
-    textSize(25);
-    text("Waiting For Opponent", 3 * width / 4, (5 * height / 6) + 50);
+//upgrades monster after dropping to combine, TODO: should be on server
+function upgradeMonster(index, draggedUpgrades){
+  let m = party[index];
+  // m.currentUpgrades++;
+  //need to address if combining two monsters with existing upgrades
+  m.currentUpgrades += draggedUpgrades + 1;
+  if (m.currentUpgrades < m.nextLevel){
+    //increase power and hp, TODO: is this always +1?
+    m.hp += draggedUpgrades + 1;
+    m.power += draggedUpgrades + 1;
+  } else {
+    //on level up, increase stats by 2
+    m.level++;
+    m.currentUpgrades -= m.nextLevel; //not resetting to 0 incase combining two who upgrades
+    m.hp += draggedUpgrades + 2;
+    m.power += draggedUpgrades + 2;
   }
-
-  pop();
+  m.currentHP = m.hp;
+  m.currentPower = m.power;
 }
 
-//shows the party slots, market slots, and hires, regardless of if they're filled or not
-function showSlots(){
-  push();
-  noStroke();
-  fill(230, 150);
-
-  if (state == "market") {
-    for (let i = 0; i < 5; i++){//party in market
-      rect(marketSlots[i], marketSlotY, assetSize);
-    }
-    for (let i = 0; i < availableHireNum; i++){ //hires, variable based on tier reached
-      rect(hireSlots[i], hireSlotY, assetSize);
-      if (hires[i] !== null){
-        image(monsterAssets[hires[i].name], hireSlots[i], hireSlotY, assetSize, assetSize);
-      }
-    }
-    for (let i = 1; i < 3; i++){ //items, same array as hires -- don't like it, but that's how SAP looks
-      rect(hireSlots[hireSlots.length - i], hireSlotY, assetSize);
-    }
-  } else if (state == "battle") {
-    translate(width/2, 0); //only translating in battle to make flip easier
-    for (let i = 0; i < 5; i++){
-      rect(battleSlots[i], battleSlotY, assetSize);
-    }
-    for (let i = 0; i < 5; i++){
-      rect(-battleSlots[i], battleSlotY, assetSize);
-    }
-  }
-
-  pop();
+function loadMonsterAssets(){
+  monsterAssets = {
+    beholder: beholder,
+    bulette: bulette, 
+    skeleton: skeleton,
+  };
 }
