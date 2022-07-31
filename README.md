@@ -44,7 +44,7 @@ Super Auto Pets and the Dungeons and Dragons monsters are property of Team Wood 
   - [X] put on glitch
   - [X] playtest bugs
     - [X] party dupe after first battle
-    - [ ] refresh hires after battle (can't reproduce)
+    - [X] refresh hires after battle (can't reproduce)
     - [X] server line 146 null (shouldn't happen...)
 
 - [X] 0.2
@@ -126,30 +126,65 @@ Super Auto Pets and the Dungeons and Dragons monsters are property of Team Wood 
 - [ ] 0.3
   - [ ] Multiplayer
     - [ ] nedb database for login and stats tracking
+      - [ ] gitignore / how to store without visible on glitch?
+      - [ ] just username/pword so no email?
+      - [ ] encrypt password -- look up data privacy how to
     - [ ] start screen
+      - [X] interface
+        - [X] title
+        - [X] play arena
+        - [X] join lobby
+        - [X] create lobby
+        - [X] log in
+        - [X] settings
+        - [X] css for title buttons
       - [ ] login
-      - [ ] join random lobby
-      - [ ] join arena lobby
+        - [ ] how to have cookies keep login info? 
+      - [ ] join random arena
         - [ ] random pairings
-        - [ ] duplicate battles if odd number
-      - [ ] join lobby by id
-  - [ ] code refactor
-    - [ ] use realistic-structured-clone & node 16.x for glitch
+        - [ ] bot teams if not enough players
+      - [ ] join lobby
+        - [X] enter name
+        - [ ] error if not valid name
+      - [ ] create lobby
+        - [X] id
+        - [X] num players
+        - [ ] error if num players isn't a valid number
+      - [ ] lobby wait screen
+        - [X] joined player names
+        - [ ] start button when ready
+        - [X] random pairings
+        - [X] duplicate battles if odd number
+      - [ ] settings/info/options
+      - [X] monster animation
+    - [ ] Matchmaking refactor
+      - [X] fix ready for multiple fighters (server.js:137)
+      - [X] fix p1,p2 in battlesteps
+      - [X] need to sync random events now... fuck
+      - [ ] client side event for win/loss to account for odds and trophies for arena
+      - [X] send player message of win if only player left -- needs refactor of battleSteps "gameOver" message
+      - [ ] global chat for matchmaking? w/ current users online number
+  - [ ] old code refactor
+    - [X] use realistic-structured-clone & node 16.x for glitch
     - [ ] fix the battle mess
     - [ ] get rid of the duplicate party display market vs battle
     - [ ] move animations currently don't account for potential moving more than one slot or dying
     - [ ] parties/ids/indexes code smell
     - [ ] figure out the battle party references stuff (server.js:300)
     - [ ] common but different name for cloned arrays
-    - [ ] "battle" vs "parties"
+    - [X] "battle" vs "parties"
     - [ ] need to clone at all? or change up what battleSteps sends... in middle
   - [ ] bugs/issues
     - [ ] "The" party name fix for names like Xanathar's
+    - [ ] center names instead of left/right? or like start from center rather than edges
     - [ ] first move display getting cut short
     - [ ] fix move steps and remove move step if no one needs to
     - [ ] sleeping should wear off if creature takes damage
     - [ ] ability sort by strength won't work if monsters somehow have negative power
     - [ ] waiting for battle different alignment on party name and market (sketch.js:985)
+    - [X] tint slowing performance
+    - [X] fix stroke after start
+    - [X] undefined vs null in mouseDragged
   - [ ] TODOs/Things to think about
     - [ ] look up networking patterns
     - [ ] look up game ability patterns
@@ -161,6 +196,8 @@ Super Auto Pets and the Dungeons and Dragons monsters are property of Team Wood 
     - [ ] how to animate attacks better
     - [ ] how to animate damage/death better (and faster?)
     - [ ] still need animation buffer?
+  - [ ] Misc QoL
+    - [ ] css for market buttons
 
 - [ ] 0.4
   - [ ] items
@@ -234,6 +271,11 @@ Super Auto Pets and the Dungeons and Dragons monsters are property of Team Wood 
   - [ ] some sort of data gathering for what is picked and what wins?
 
   ## Playtest Notes
+
+  ### 0.3
+
+  **Balance Notes**
+  - changed kobolds to total num kobolds instead of total -1, but still only triggers if multiple
 
   ### 0.2
 

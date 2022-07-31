@@ -62,6 +62,25 @@ socket.on('connect', () => {
   playerID = socket.id;
 });
 
+//wait screen for lobby
+socket.on("waitingForLobby", (data) => {
+  state = "waiting for lobby";
+  lobby = data;
+  lobby.playersArray = []; //dumb but w/e
+  for (let p of lobby.players){
+    lobby.playersArray.push(p);
+  }
+  while (lobby.playersArray.length < lobby.numPlayers){
+    lobby.playersArray.push(null); //hmmmmmmmmmm
+  }
+});
+
+//lobby connect error
+socket.on("lobbyJoinError", (data) => {
+  console.log("ERROR JOINING LOBBY:");
+  console.log(data.lobbyName);
+});
+
 // basic setup on connecting to server or after battle when going back to market
 socket.on('goToMarket', (data) => {
   console.log('going to market');
@@ -73,11 +92,12 @@ socket.on('goToMarket', (data) => {
   hires = data.hires;
   party = data.party; //refreshes after battle
   
-  if (doneSetup){
+  if (doneSetup){ //TODO irrelevant now
     slots = [{sX: marketSlots, sY: marketSlotY, m:party}, {sX: hireSlots, sY: hireSlotY, m: hires}]; //array for all draggable slots, with appropriate Ys
     refreshButt.show();
     readyButt.show();
     showEverything();
+    backButt.hide();
   }
 });
 
@@ -128,12 +148,19 @@ socket.on("startBattle", (data) => {
   console.log("battle start");
   console.log(battleSteps);
   stepThroughBattle(battleSteps);
+  numPlayersInLobby = data.numPlayersInLobby;
 
-  for (let p of data.startParties){
-    if (p.id != playerID){
-      enemyName = p.partyName;
-    }
+  // enemyName = data.startPair[1].partyName; //TODO username too?
+  if (data.startPair[0].id == playerID){
+    enemyName = data.startPair[1].partyName;
+  } else {
+    enemyName = data.startPair[0].partyName;
   }
+  // for (let p of data.startPair){
+  //   if (p.id != playerID){
+  //     enemyName = p.partyName;
+  //   }
+  // }
 
   //remove market stuff
   dragged = {};
@@ -147,10 +174,12 @@ socket.on("startBattle", (data) => {
 //
 
 //overall game state
-let state = "market";
-// let availableHireNum = 3; //now just using hires
+let state = "start";
 let hires = [null, null, null]; //available monsters in market
 let doneSetup = false;
+let lobby;
+let userName = "";
+let numPlayersInLobby = 0;
 
 // player stuff
 let party = [null, null, null, null, null];
@@ -200,6 +229,9 @@ let shouldShowMonsterInfo = false;
 let infoBox = {name: "", abilityText: "", x: 0, y: 0, width: 0, height: 0, textSize: 0};
 let nameSlotWidth;
 let textSizeUI, textSizeOver, textSizePartyName;
+let arenaButt, joinButt, lobbyButt, loginButt, settingsButt;
+let startMonsters = [];
+let lobbyInput, createButt, numPlayersInput, backButt; //using the same button for both because couldn't decide on variable names
 
 // ITEMS
 let randomSpots = [];
@@ -212,7 +244,7 @@ let sporeNum = 8;
 function setup(){
   createCanvas(windowWidth - 5, windowHeight - 5); //TODO better way of ensuring scrollbars don't show up
   // background(82,135,39);
-  image(forest, width/2, height/2, windowWidth, windowHeight);
+  // image(forest, width/2, height/2, windowWidth, windowHeight);
 
   //layout
   rectMode(CENTER);
@@ -248,7 +280,6 @@ function setup(){
   textSizeOver = width / 8;
   textSizePartyName = 4 * nameSlotWidth / 5;
 
-
   battleResultColors = {"TIE": color(230), "WIN": color(0, 255, 50), "LOSS": color(200, 0, 0)};
 
   infoBox.width = width/4;
@@ -257,6 +288,9 @@ function setup(){
   
   //make UI
   refreshButt = createButton('REFRESH HIRES').position(width / 5, 5 * height / 6).mousePressed(()=>{socket.emit("refreshHires", hires)}); //if gold left, replaces hires with random hires
+  refreshButt.class("startButts");
+  // refreshButt.center("horizontal");
+  refreshButt.hide(); //not on start
   readyButt = createButton('READY UP').position(4 * width / 5, 5 * height / 6).mousePressed(()=>{
     if (partyName == "") {
       socket.emit("getPartyNames");
@@ -264,11 +298,106 @@ function setup(){
       socket.emit("readyUp", {party: party, hires: hires, partyName: partyName}); //sends msg that we're ready to battle
     }
   });
+  readyButt.class("startButts");
+  // readyButt.center("horizontal");
   readyButt.hide(); //hiding until there's a party to send to battle
+  let startButtWidth = width/3 + "px";
+  let startButtWidthHalf = width/6 + "px";
+  let startButtHeight = height/8 + "px";
+  //TODO make functions
+  // arenaButt = createButton('Play Arena').position(width / 2, 3 * height / 7).class("startButts").style("width", startButtWidth).style("height", startButtHeight).mousePressed(()=>{});
+  joinButt = createButton('Join Lobby').position(width / 2, 4 * height / 7).class("startButts").style("width", startButtWidth).style("height", startButtHeight).mousePressed(()=>{
+    lobbyInput.show();
+    createButt.show();
+    backButt.show();
+    // arenaButt.hide();
+    joinButt.hide();
+    lobbyButt.hide();
+    // loginButt.hide();
+    // settingsButt.hide();
+    createButt.html("Join Lobby");
+    state = "join lobby";
+  });
+  lobbyButt = createButton('Create Lobby').position(width / 2, 5 * height / 7).class("startButts").style("width", startButtWidth).style("height", startButtHeight).mousePressed(()=>{
+    numPlayersInput.show();
+    lobbyInput.show();
+    createButt.show();
+    backButt.show();
+    // arenaButt.hide();
+    joinButt.hide();
+    lobbyButt.hide();
+    // loginButt.hide();
+    // settingsButt.hide();
+    createButt.html("Create Lobby");
+    state = "create lobby";
+  });
+  // loginButt = createButton('Log In').position(width / 4, 6 * height / 7).class("startButts").style("width", startButtWidthHalf).style("height", startButtHeight).mousePressed(()=>{});
+  // settingsButt = createButton('Settings').position(3 * width / 4, 6 * height / 7).class("startButts").style("width", startButtWidthHalf).style("height", startButtHeight).mousePressed(()=>{});
+  // arenaButt.center("horizontal");
+  joinButt.center("horizontal");
+  lobbyButt.center("horizontal");
+  // loginButt.style("margin-left", "-15%");
+  // settingsButt.style("margin-right", "-25%");
+
+  numPlayersInput = createInput('Enter Number of Players').position(width / 2, 3 * height / 7).style("width", startButtWidth / 2).style("height", startButtHeight / 2);
+  numPlayersInput.class("inputs");
+  numPlayersInput.center("horizontal");
+  numPlayersInput.hide();
+  lobbyInput = createInput('Enter a Lobby ID').position(width / 2, 4 * height / 7).style("width", startButtWidth / 2).style("height", startButtHeight / 2);
+  lobbyInput.class("inputs");
+  lobbyInput.center("horizontal");
+  lobbyInput.hide();
+  createButt = createButton('Create Lobby').position(width / 2, 5 * height / 7).class("startButts").style("width", startButtWidth / 2).style("height", startButtHeight).mousePressed(()=>{
+    if (state == "create lobby"){
+      socket.emit("createLobby", {lobbyName: lobbyInput.value(), numPlayers: numPlayersInput.value(), userName: userName});
+    } else if (state == "join lobby"){
+      socket.emit("joinLobby", {lobbyName: lobbyInput.value(), userName: userName}); //TODO userName on login
+    }
+    // background(112,16,15);
+    numPlayersInput.hide();
+    lobbyInput.hide();
+    createButt.hide();
+    //backButt.show(); //hmmm TODO -- need to remove from lobby when goes back
+  });
+  createButt.center("horizontal");
+  createButt.hide();
+  backButt = createButton('BACK').position(width / 8, 6 * height / 7).class("startButts").style("width", startButtWidthHalf / 2).style("height", startButtHeight / 2).mousePressed(()=>{
+    numPlayersInput.hide();
+    lobbyInput.hide();
+    createButt.hide();
+    backButt.hide(); //TODO -- need to remove from lobby when goes back
+    state = "start";
+    // arenaButt.show();
+    joinButt.show();
+    lobbyButt.show();
+    // loginButt.show();
+    // settingsButt.show();
+  });
+  backButt.hide();
 
   //assets after loadImage
   loadMonsterAssets();
   diceAssets = [null, dice1, dice2, dice3, dice4, dice5, dice6];
+
+  //for start screen animation
+  startMonsters = [
+    {isFlipped: false, asset: gnoll},
+    {isFlipped: false, asset: stirge},
+    {isFlipped: false, asset: kobold},
+    {isFlipped: false, asset: vegepygmy},
+    {isFlipped: false, asset: skeleton},
+    {isFlipped: false, asset: beholder},
+    {isFlipped: false, asset: bulette},
+    {isFlipped: false, asset: goblin},
+    {isFlipped: false, asset: flumph},
+    {isFlipped: false, asset: mephit},
+    {isFlipped: false, asset: cavebear}
+  ];
+  for (let m of startMonsters){
+    if (random() < 0.3){
+      m.isFlipped = true;
+    }
+  }
 
   //Items
   for (let i = 0; i < sporeNum; i++){
@@ -280,6 +409,9 @@ function setup(){
   //display
   doneSetup = true;
   showEverything();
+
+  //placeholder TODO login
+  userName = "Player " + floor(random(100));
 } 
 
 //
@@ -288,7 +420,44 @@ function setup(){
 
 function draw(){
   //had to move drag hover functions here or else would only trigger on move, makes hover wonky
-  if (state == "market"){
+  if (state == "start" || state == "create lobby" || state == "join lobby") {
+    //title
+    push();
+    background(112,16,15);
+    textSize(width/10);
+    stroke(255);
+    strokeWeight(8);
+    fill(0);
+    text("Super Auto Lich", width/2, height/7);
+    //monsters
+    for (let [i, m] of startMonsters.entries()){
+      push();
+      translate(i * width / 18 + 4 * width / 18, 2 * height / 7);
+      if(random() < 0.01){
+        m.isFlipped = !m.isFlipped;
+      }
+      if(m.isFlipped){
+        scale(-1,1);
+      }
+      image(m.asset, 0, 0, assetSize / 2, assetSize / 2);
+      pop();
+    }
+    pop();
+  } else if (state == "waiting for lobby"){
+    push();
+    background(112,16,15);
+    textSize(width/20);
+    text(lobby.lobbyName, width / 2, height / 8);
+    text("Num Players To Start: " + lobby.numPlayers, width/2, 2 * height / 8);
+    text("PLAYERS: ", width/2, 4 * height / 8);
+    textSize(width/25);
+    for (let i = 0; i < lobby.numPlayers; i++){
+      if (lobby.playersArray[i] != null){
+        text(lobby.playersArray[i].userName, width / 2, map(i, 0, lobby.numPlayers, 5 * height / 8, 8 * height / 8));  //shh
+      }
+    }
+    pop();
+  } else if (state == "market"){
     if (pickedUpSomething) {
       //show dragged image
       showEverything();
@@ -348,7 +517,7 @@ function draw(){
   }else if (state == "gameOver") {
     background(20);
     textSize(textSizeOver);
-    if (battleResult == "YOU WON") {
+    if (battleResult == "YOU WON" ) {
       fill(0, 250, 80);
     } else if (battleResult == "YOU LOST") {
       fill(200, 0, 0);
@@ -366,7 +535,7 @@ function draw(){
         stepThroughBattle(battleSteps);
       } else {
         stepTimer++;
-        if (stepTimer%50 == 0) {console.log(stepTimer)};
+        // if (stepTimer%50 == 0) {console.log(stepTimer)};
         updateAnimations();
       }
       if (isBattleOver) { //text not showing b/c getting overwritten
@@ -402,7 +571,6 @@ function mouseClicked(){
       stepSpeed = regularSpeed / 2;
     }
   } else if (state == "party name"){
-    
     for (let i = 0; i < 3; i++){
       //top name buttons
       if (mouseX > nameSlots.x[i] - 4 * nameSlotWidth && mouseX < nameSlots.x[i] + 4 * nameSlotWidth && mouseY > nameSlots.y[0] - 2 * nameSlotWidth && mouseY < nameSlots.y[0] + 2 * nameSlotWidth){
@@ -422,7 +590,9 @@ function mouseDragged(){ //just for pickup now
   if (state == "market" && !waitingForBattle && !pickedUpSomething) {
     for (let s of slots){
       for (let [i, slotX] of s.sX.entries()){
-        if (s.m[i] !== null && mouseX > slotX - r && mouseX < slotX + r && mouseY > s.sY - r && mouseY < s.sY + r) {
+        if (s.m[i] !== null && s.m[i] !== undefined && mouseX > slotX - r && mouseX < slotX + r && mouseY > s.sY - r && mouseY < s.sY + r) {
+          console.log(i);
+          console.log(s.m[i]);
           //in bounds, grab image and remove from original spot
           pickedUpSomething = true;
           dragged = {
@@ -803,32 +973,43 @@ function showMonster(monster){
   let yOffset = (3 * size / 4);
   let statSize = size / 3;
 
-  //effects
-  if (monster.isSleeping){
-    tint(0, 153, 204);
-  }
-  if (monster.isNullified){
-    tint(204, 0, 153);
-  }
+  //effects -- tint was causing performance issues
+  // if (monster.isSleeping){
+  //   // tint(0, 153, 204);
+  // }
+  // if (monster.isNullified){
+  //   // tint(204, 0, 153);
+  // }
 
   push();
   //annoying, need more elegant solution to flipping images and text
   if (!monster.isMyParty) {
+    translate(-x, y);
     push();
-    translate(-monster.x, monster.y);
     rotate(-monster.rotation);
     scale(-1, 1);
     image(monsterAssets[monster.name], 0, 0, size, size);
     pop();
     x = -x; //so text flips
   } else {
-    translate(monster.x, monster.y);
+    translate(x, y);
+    push();
     rotate(monster.rotation);
     image(monsterAssets[monster.name], 0, 0, size, size);
+    pop();
+  }
+  showMonsterItems(monster, 0, 0);
+  noStroke();
+  if (monster.isSleeping){
+    fill(0, 153, 204, 100);
+    rect(0, 0, assetSize);
+  }
+  if (monster.isNullified){
+    fill(204, 0, 153, 100);
+    rect(0, 0, assetSize);
   }
   pop();
 
-  showMonsterItems(monster, x, y);
 
   let powerX = x - xOffset;
   let hpX = x + xOffset;
@@ -884,7 +1065,7 @@ function showMonsterItems(monster, x, y){ //x,y because of flip that happens in 
       noStroke();
       for (let i = 0; i < sporeNum; i++){
         ellipse(x + randomSpots[i].rX, y + randomSpots[i].rY, random(4, 12));
-        console.log(x, y);
+        // console.log(x, y);
       }
       pop();
     }
@@ -997,13 +1178,23 @@ function stepThroughBattle(battleSteps){
     let step = battleSteps[0];
     console.log(step.action);
     //reset and update stepSpeed if changed
-    for (let client of step.parties){
-      if (client.id == playerID){
-        battleParty = client.party;
-      } else {
-        enemyParty = client.party;
-      }
+    // for (let client of step.parties){
+    //   if (client.id == playerID){
+    //     battleParty = client.party;
+    //   } else {
+    //     enemyParty = client.party;
+    //   }
+    // }
+    // battleParty = step.pair[0].battleParty;
+    // enemyParty = step.pair[1].battleParty;
+    if (step.pair[0].id == playerID){
+      battleParty = step.pair[0].battleParty;
+      enemyParty = step.pair[1].battleParty;
+    } else {
+      battleParty = step.pair[1].battleParty;
+      enemyParty = step.pair[0].battleParty;
     }
+
     //seems redundant but TODO refactor
     for (let i = 0; i < enemyParty.length; i++){
       enemyParty[i].x = battleSlots[i];
@@ -1092,13 +1283,21 @@ function stepThroughBattle(battleSteps){
         socket.emit("goToMarket")
       }, 3000);
     } else if (step.action == "gameOver"){
-      state = "gameOver";
-      if (step.winner == playerID){
+      if (step.winner != playerID){
+        state = "gameOver";
+        battleResult = "YOU LOST";
+      } else if (numPlayersInLobby == 1){
+        state = "gameOver";
         battleResult = "YOU WON";
       } else {
-        battleResult = "YOU LOST";
+        battleResult = "WIN";
+        isBattleOver = true;
+        //set timer for going back to market
+        setTimeout(() => {
+          socket.emit("goToMarket")
+        }, 3000);
       }
-    } else if (step.action == "battleOver"){
+    } else if (step.action == "battleOver"){ //TODO match gameOver on server, instead of checking here, now that each client is getting own
       if (battleParty.length == 0){
         // hp -= ; //TODO hp loss animation
         battleResult = "LOSS";
@@ -1118,7 +1317,6 @@ function stepThroughBattle(battleSteps){
     battleSteps.splice(0,1);
   }
 }
-
 
 //upgrades monster after dropping to combine, TODO: should be on server
 function upgradeMonster(index, draggedUpgrades){
