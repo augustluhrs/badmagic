@@ -8,44 +8,9 @@
 //  ASSET LOAD
 //
 
-let monsterAssets = {};
-let dice1, dice2, dice3, dice4, dice5, dice6;
-let diceAssets = [];
-let font;
-let forest, cave;
-let cavebear, flumph, gnoll, goblin, kobold, mephit, skeleton, stirge, vegepygmy;
-let bulette;
-let beholder;
 
 function preload() {
-  dice1 = loadImage('assets/dice1.png');
-  dice2 = loadImage('assets/dice2.png');
-  dice3 = loadImage('assets/dice3.png');
-  dice4 = loadImage('assets/dice4.png');
-  dice5 = loadImage('assets/dice5.png');
-  dice6 = loadImage('assets/dice6.png');
-  //font
-  font = loadFont('assets/fonts/MochiyPopOne-Regular.ttf');
-  //backgrounds
-  forest = loadImage('assets/backgrounds/forest.png');
-  cave = loadImage('assets/backgrounds/cave.png');
-  //tier1
-  cavebear = loadImage('assets/cavebear.png');
-  flumph = loadImage('assets/flumph.png');
-  gnoll = loadImage('assets/gnoll.png');
-  goblin = loadImage('assets/goblin.png');
-  kobold = loadImage('assets/kobold.png');
-  mephit = loadImage('assets/mephit.png');
-  skeleton = loadImage('assets/skeleton.png');
-  stirge = loadImage('assets/stirge.png');
-  vegepygmy = loadImage('assets/vegepygmy.png');
-  //tier2
-  //tier3
-  //tier4
-  bulette = loadImage('assets/bulette.png');
-  //tier5
-  beholder = loadImage('assets/beholder.png');
-  //tier6
+  
 }
 
 //
@@ -54,188 +19,17 @@ function preload() {
 
 //open and connect the input socket
 let socket = io('/');
-let playerID;
 
 //listen for the confirmation of connection 
 socket.on('connect', () => {
   console.log('now connected to server');
-  playerID = socket.id;
-});
-
-//wait screen for lobby
-socket.on("waitingForLobby", (data) => {
-  state = "waiting for lobby";
-  lobby = data;
-  lobby.playersArray = []; //dumb but w/e
-  for (let p of lobby.players){
-    lobby.playersArray.push(p);
-  }
-  while (lobby.playersArray.length < lobby.numPlayers){
-    lobby.playersArray.push(null); //hmmmmmmmmmm
-  }
-});
-
-//lobby connect error
-socket.on("lobbyJoinError", (data) => {
-  console.log("ERROR JOINING LOBBY:");
-  console.log(data.lobbyName);
-});
-
-// basic setup on connecting to server or after battle when going back to market
-socket.on('goToMarket', (data) => {
-  console.log('going to market');
-  state = "market";
-  isBattleOver = false;
-  gold = data.gold;
-  hp = data.hp;
-  turn = data.turn;
-  hires = data.hires;
-  party = data.party; //refreshes after battle
-  
-  if (doneSetup){ //TODO irrelevant now
-    slots = [{sX: marketSlots, sY: marketSlotY, m:party}, {sX: hireSlots, sY: hireSlotY, m: hires}]; //array for all draggable slots, with appropriate Ys
-    refreshButt.show();
-    readyButt.show();
-    showEverything();
-    backButt.hide();
-  }
-});
-
-// receive parties once both have sent to server
-socket.on('initParty', (data, callback) => {
-  console.log('init parties');
-  party = data.party;
-  enemyParty = data.enemyParty;
-  showEverything();
-});
-
-//get refreshed hires during market
-socket.on('newHires', (data) => {
-  hires = data.hires;
-  slots[1].m = hires;
-  gold = data.gold;
-  showEverything();
-});
-
-//get updated gold after hiring
-socket.on('updateGold', (data) => {
-  gold = data.gold;
-  showEverything();
-  //showing ready button here because it's after first hire
-  readyButt.show();
-});
-
-//on first ready, get prompt to set up team name
-socket.on("setPartyName", (data) => {
-    names.adjectives = data.adjectives;
-    names.nouns = data.nouns;
-    partyNoun = data.nouns[0];
-    partyAdjective = data.adjectives[0];
-    state = "party name";
-});
-
-//if other player isn't ready for battle, show waiting
-socket.on("waitingForBattle", () => {
-  waitingForBattle = true;
-  showEverything();
-});
-
-//start battle
-socket.on("startBattle", (data) => {
-  state = "battle";
-  waitingForBattle = false;
-  battleSteps = data.battleSteps;
-  console.log("battle start");
-  console.log(battleSteps);
-  stepThroughBattle(battleSteps);
-  numPlayersInLobby = data.numPlayersInLobby;
-
-  // enemyName = data.startPair[1].partyName; //TODO username too?
-  if (data.startPair[0].id == playerID){
-    enemyName = data.startPair[1].partyName;
-  } else {
-    enemyName = data.startPair[0].partyName;
-  }
-  // for (let p of data.startPair){
-  //   if (p.id != playerID){
-  //     enemyName = p.partyName;
-  //   }
-  // }
-
-  //remove market stuff
-  dragged = {};
-  refreshButt.hide();
-  readyButt.hide();
-  showEverything();
 });
 
 //
 //  VARIABLES
 //
 
-//overall game state
-let state = "start";
-let hires = [null, null, null]; //available monsters in market
-let doneSetup = false;
-let lobby;
-let userName = "";
-let numPlayersInLobby = 0;
 
-// player stuff
-let party = [null, null, null, null, null];
-let battleParty = []; //going to use this for now to prevent any messes... TODO remove
-let gold, hp, turn;
-let enemyParty = [];
-
-// party name stuff
-let partyName = "";
-let names = {adjectives: [], nouns: []};
-let partyAdjective = "";
-let partyNoun = "";
-let enemyName;
-
-// UI + Layout
-let stepButt, updateButt; //just for slowing down debug, will eventually trigger automatically
-let battleSlots = []; //where party is in battle, translated to center, flipped for enemy
-let marketSlots = []; //where party is in market
-let hireSlots = []; //where available monsters in market are
-let nameSlots = [ ]; //where name options are during party naming
-let battleSlotY, marketSlotY, hireSlotY; //center height of monsters
-let slots = []; //array for all draggable slots, with appropriate Ys
-let freezeSlot; //the slot to drag to freeze
-let sellSlot; //the slot to drag to sell
-let assetSize; //size to display monster pngs
-let r; //radius of image
-let slotSize; // asset size + buffer gap
-let tierSize; //size of dice assets
-let playerStatY; //height of top stats
-let refreshButt, readyButt; // market buttons
-let waitingForBattle = false; //when ready but opponent isn't
-let pickedUpSomething = false; //to trigger between mouseDragged and mouseReleased
-let dragged = {}; //image asset to show on mouseDragged + original party and index for return
-let hoverTimer = 0; //to tick up to check against checkTime
-let hoverCheckTime = 70; //timer before hover triggers
-let speedSlots = []; //for speed UI in battle
-let speedSlotY; //Y height of speed UI
-let isPaused = false;
-let stepSpeed = 50; //amount of time each animation step takes
-let regularSpeed = 50; //default speed, /2 for fast forward
-let stepTimer = 0;
-let animationRange; //standard distance to animate
-let isBattleOver = false; //just for displaying result text
-let battleResult = ""; //text to display at end of battle
-let battleResultColors = {}; //colors for battle text display
-let shouldShowMonsterInfo = false;
-let infoBox = {name: "", abilityText: "", x: 0, y: 0, width: 0, height: 0, textSize: 0};
-let nameSlotWidth;
-let textSizeUI, textSizeOver, textSizePartyName;
-let arenaButt, joinButt, lobbyButt, loginButt, settingsButt;
-let startMonsters = [];
-let lobbyInput, createButt, numPlayersInput, backButt; //using the same button for both because couldn't decide on variable names
-
-// ITEMS
-let randomSpots = [];
-let sporeNum = 8;
 
 //
 //  MAIN
@@ -243,14 +37,11 @@ let sporeNum = 8;
 
 function setup(){
   createCanvas(windowWidth - 5, windowHeight - 5); //TODO better way of ensuring scrollbars don't show up
-  // background(82,135,39);
-  // image(forest, width/2, height/2, windowWidth, windowHeight);
-
+  
   //layout
-  rectMode(CENTER);
   imageMode(CENTER);
   angleMode(RADIANS);
-  textFont(font);
+  // textFont(font);
   textAlign(CENTER, CENTER);
   strokeWeight(2);
 
