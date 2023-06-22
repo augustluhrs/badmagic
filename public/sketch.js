@@ -5,54 +5,20 @@
 */
 
 //
-//  SOCKET SERVER STUFF
-//
-
-//open and connect the input socket
-let socket = io('/');
-
-//listen for the confirmation of connection 
-socket.on('connect', () => {
-  console.log('now connected to server');
-});
-
-//
 //  VARIABLES
 //
 
-let flock = []; //the array of all pointers in the flock
-let flockSize; //the quantity of pointers in the flock
-let pointerSize = 15; //more or less exact size of my pointer, could fluctuate randomly TODO
 
-//variables for storing and adjusting flocking options
-let sliders = []; //overkill to store in array, but w/e, i love arrays
-let sliderWidth; //size of the sliders and also the font size
-let separationSlider, alignmentSlider, cohesionSlider, speedSlider, forceSlider, seekSlider, flockSlider, trailSlider;
-let flockParams = {
-  perceptionRadius: 100, //how close is considered in-flock
-  maxSpeed: 20, //speed of movement
-  maxForce: 0.02, //speed of change to movement
-  desiredSeparation: pointerSize * 2, //how far apart should they want to be
-  separationBias: 20, //how much they should want to be apart
-  alignmentBias: 1, //how much they should want to move in the same direction
-  cohesionBias: 0.2, //how much they should want to be close together
-  seekBias: 1, //how much they should want to follow the mouse
-  flockSize: 50, //quantity of pointers
-  trailAmount: 50, //the transparency of the background (adds trail)
-}
 
 //
 //  ASSET LOAD
 //
 
-let pointer; //the loaded pointer png
 let clouds; //the loaded background image
 let cloudColor; //stores the color we're tinting the clouds
-// let labelSize; //the font scale for the label text
 let font; // the custom font
 
 function preload() {
-  pointer = loadImage("assets/images/pointer.png");
   clouds = loadImage("assets/images/clouds.jpg");
   font = loadFont("assets/fonts/MochiyPopOne-Regular.ttf");
 }
@@ -63,47 +29,17 @@ function preload() {
 //
 
 function setup(){
-  createCanvas(windowWidth - 5, windowHeight - 5); //TODO better way of ensuring scrollbars don't show up
+  createCanvas(windowWidth - 3, windowHeight - 3); //TODO better way of ensuring scrollbars don't show up
   
   //layout
   imageMode(CENTER); //draws the image from center coordinates instead of corner
-  textAlign(CENTER, BOTTOM); //aligns the text to the center horizontally, and to the bottom vertically
+  textAlign(CENTER, CENTER); //aligns the text to the center horizontally, and to the bottom vertically
   textFont(font);
   noStroke();//removes the outline so the text isn't as thick
   colorMode(HSB);
 
   cloudColor = color("#93a808"); //idk i love this color
   cloudColor.setAlpha(flockParams.trailAmount); //adding transparency so we get some pointer trails when draw() loops
-  
-  //create some basic sliders so we can adjust the flock settings without changing the code 
-  //each slider will update its corresponding part of the flockParams object
-  //*NOTE: only for the single player mode*
-  separationSlider = createSlider(0, 50, flockParams.separationBias, 0.1);
-  separationSlider.changed(updateParams);
-  alignmentSlider = createSlider(0, 5, flockParams.alignmentBias, 0.1);
-  alignmentSlider.changed(updateParams);
-  cohesionSlider = createSlider(0, 1, flockParams.cohesionBias, 0.01);
-  cohesionSlider.changed(updateParams);
-  speedSlider = createSlider(0.01, 30, flockParams.maxSpeed, 1);
-  speedSlider.changed(updateParams);
-  forceSlider = createSlider(0.01, 0.1, flockParams.maxForce, 0.01);
-  forceSlider.changed(updateParams);
-  seekSlider = createSlider(0, 3, flockParams.seekBias, 0.1);
-  seekSlider.changed(updateParams);
-  flockSlider = createSlider(1, 300, flockParams.flockSize, 1);
-  flockSlider.changed(updateFlock);
-  trailSlider = createSlider(0, 255, flockParams.trailAmount, 1);
-  trailSlider.changed(()=>{cloudColor.setAlpha(trailSlider.value())});
-  
-  sliders.push(separationSlider, alignmentSlider, cohesionSlider, speedSlider, forceSlider, seekSlider, flockSlider, trailSlider);
-  
-  sliderWidth = width/(sliders.length+3);
-  for (let i = 0; i < sliders.length; i++){
-    sliders[i].class("sliders"); //give each slider the css class "sliders" from style.css
-    //adjusting the size/position dynamically to fit different screens
-    sliders[i].size(sliderWidth);
-    sliders[i].position(((width/sliders.length)*i)+(sliderWidth/4), height - (height/15));
-  }
   
   //create the flock
   for(i = 0; i < flockParams.flockSize; i++){

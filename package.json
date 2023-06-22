@@ -1,6 +1,6 @@
 {
-  "name": "pointer-flocking",
-  "version": "0.0.2",
+  "name": "punksite",
+  "version": "0.0.1",
   "description": "",
   "main": "server.js",
   "scripts": {
@@ -10,11 +10,9 @@
   "author": "August Luhrs",
   "license": "ISC",
   "engines": {
-    "node": "16.x"
+    "node": "18.x"
   },
   "dependencies": {
-    "express": "^4.18.1",
-    "realistic-structured-clone": "^3.0.0",
-    "socket.io": "^4.5.1"
+    "express": "^4.18.1"
   }
 }
