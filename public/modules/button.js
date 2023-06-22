@@ -39,7 +39,8 @@ class Button{
     for (let i = 0; i < this.vertices.length; i++){
       this.vertices[i] += random(-2, 2);
     }
-    this.label.size += random(-1,1);
+    // this.label.size += random(-1,1);
+    this.label.rot += random(-0.01, 0.01);
   }
 
   update(){
@@ -54,10 +55,12 @@ class Button{
     }
     pop();
     push();
+    translate(this.pos.x,this.pos.y);
+    rotate(this.label.rot);
     fill(0);
     textFont(this.label.font);
     textSize(this.label.size);
-    text(this.label.text, this.pos.x, this.pos.y);
+    text(this.label.text, 0, 0);
     pop();
   }
 
