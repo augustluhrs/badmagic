@@ -11,7 +11,7 @@ class Flock{
       cohesionBias: 0.4, //how much they should want to be close together
       seekBias: 1, //how much they should want to follow the mouse
       flockSize: 12, //quantity of pointers
-      trailAmount: .05, //the transparency of the background (adds trail)
+      trailAmount: .1, //the transparency of the background (adds trail)
     } || _flockParams;
     
     this.flock = []; //the array of all pointers in the flock
@@ -97,12 +97,12 @@ class Boid{
       let median = closest[floor(closest.length/2)];
       let sat = saturation(this.color);
       let bri = brightness(this.color);
-      let newHue = lerpColor(this.color, color(median, sat, bri), 0.01);
+      // let newHue = lerpColor(this.color, color(median, sat, bri), 0.01);
       let mutation = random();
       if (mutation < 0.001){
         this.color = color(random(0,360), sat, bri);
       } else {
-        this.color = color(newHue, sat, bri);
+        this.color = lerpColor(this.color, color(median, sat, bri), 0.01);
       }
     }
     

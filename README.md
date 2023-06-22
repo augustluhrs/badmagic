@@ -2,11 +2,11 @@
 
 ## First Prototype
 
-- [ ] Basic Setup
-- [ ] Shape Demo
-- [ ] Text Demo
-- [ ] Mouse Interaction Demo
-- [ ] Link Click Demo
+- [X] Basic Setup
+- [X] Shape Demo
+- [X] Text Demo
+- [X] Mouse Interaction Demo
+- [X] Link Click Demo
 - [ ] Mobile/Desktop toggleMode
 
 ## Looking Ahead

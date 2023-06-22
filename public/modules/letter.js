@@ -1,4 +1,26 @@
-class Letter(){
+class Title{
+  constructor(_strings, _fonts, _fontSize){
+    this.title = [];
+    this.timer = 80;
+    for (let i = 0; i < _strings.length; i++){
+      for (let j = 0; j < _strings[i].length; j++){
+        let charPos = createVector(width/(_strings[i].length + 3) * (j + 2), (height/(_strings.length + 2) * (i + 1)));
+        let letter = new Letter(_strings[i][j], _fonts, _fontSize, charPos, this.timer);
+        this.title.push(letter);
+      }
+    }
+  }
+
+  update(){
+    for (let char of this.title){
+      char.update();
+      char.show();
+    }
+  }
+
+}
+
+class Letter{
   //more accurate name would be "Characters"
   constructor(_char, _fonts, _size, _pos, _timerMax){
     this.text = _char;
@@ -34,7 +56,7 @@ class Letter(){
   show(){
     push();
     textSize(this.size);
-    font(this.font);
+    textFont(this.font);
     text(this.text, this.pos.x, this.pos.y);
     pop();
   }

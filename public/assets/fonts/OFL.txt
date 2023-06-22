@@ -1,4 +1,13 @@
 Copyright 2020 The Mochiypop Project Authors (https://github.com/fontdasu/Mochiypop)
+Copyright (c) 2012 Grzegorz Klimczewski, Fonty.PL (www.fonty.pl), with Reserved Font Name 'Akronim'
+Copyright 2019 The Cherry Bomb Project Authors (https://github.com/satsuyako/CherryBomb)
+Copyright (c) 2011, Typomondo, with Reserved Font Name  "Eater".
+Copyright (c) 2012, Font Diner (www.fontdiner.com), with Reserved Font Name "Griffy".
+Copyright 2023 The Kablammo Project Authors (https://github.com/Vectro-Type-Foundry/kablammo)
+Copyright 2012 The Press Start 2P Project Authors (cody@zone38.net), with Reserved Font Name "Press Start 2P".
+Copyright 2020 The Rock 3D Project Authors (https://github.com/shibuyafont/3d-rock-font), all rights reserved.
+Copyright 2020 The Rubik Filtered Project Authors (https://https://github.com/NaN-xyz/Rubik-Filtered)
+
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:
