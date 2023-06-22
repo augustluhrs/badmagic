@@ -9,6 +9,7 @@
 //
 
 let flock; //holds the stuff flying around the mouse/screen
+let title = []; //holds all the characters in the title
 
 //
 //  ASSET LOAD
@@ -17,12 +18,17 @@ let flock; //holds the stuff flying around the mouse/screen
 let pointer; //the image of the mouse pointer
 let clouds; //the loaded background image
 let cloudColor; //stores the color we're tinting the clouds
-let font; // the custom font
+let fonts = []; // the array of custom fonts
+let fontSize = 40;
+let mochiy; //the references to the custom fonts getting loaded
 
 function preload() {
   pointer = loadImage("assets/images/pointer.png");
   clouds = loadImage("assets/images/clouds.jpg");
-  font = loadFont("assets/fonts/MochiyPopOne-Regular.ttf");
+  mochiy = loadFont("assets/fonts/MochiyPopOne-Regular.ttf");
+  
+  
+  fonts.push(mochiy);
 }
 
 //
@@ -39,6 +45,9 @@ function setup(){
   noStroke();//removes the outline so the text isn't as thick
   colorMode(HSB);
   
+  //font scale 
+  textSize(fontSize); 
+  
   //create flock array
   flock = new Flock();
   
@@ -46,8 +55,14 @@ function setup(){
   cloudColor = color("#93a808"); //idk i love this color
   cloudColor.setAlpha(flock.flockParams.trailAmount); //adding transparency so we get some pointer trails when draw() loops
   
-  //font scale 
-  textSize(40); 
+  //setup the title characters
+  for (let char of "COLLAB"){
+    let letter = new Letter(char, fonts, fontSize)
+  }
+  for (let char of "ARTS"){
+    
+  }
+
 } 
 
 //
