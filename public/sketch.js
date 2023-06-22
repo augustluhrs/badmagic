@@ -55,12 +55,18 @@ function setup(){
   cloudColor = color("#93a808"); //idk i love this color
   cloudColor.setAlpha(flock.flockParams.trailAmount); //adding transparency so we get some pointer trails when draw() loops
   
-  //setup the title characters
-  for (let char of "COLLAB"){
-    let letter = new Letter(char, fonts, fontSize)
+  //setup the title characters -- move to Title Class
+  let title1 = "COLLAB";
+  let title2 = "ARTS";
+  for (let i = 0; i < title1.length; i ++){
+    let charPos = createVector(width/(title1.length+3) * i, height/4);
+    let letter = new Letter(title1[i], fonts, fontSize, charPos, 200);
+    title.push(letter);
   }
-  for (let char of "ARTS"){
-    
+  for (let i = 0; i < title2.length; i ++){
+    let charPos = createVector(width/(title2.length+3) * i, height/4);
+    let letter = new Letter(title2[i], fonts, fontSize, charPos, 200);
+    title.push(letter);
   }
 
 } 
