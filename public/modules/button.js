@@ -1,6 +1,7 @@
 class Button{
   constructor(_label, _shape, _size, _pos, _color){
     this.label = _label; //{"text", font, size}
+    this.label.rot = 0;
     this.color = _color;
     this.shape = _shape;
     this.vertices = [];

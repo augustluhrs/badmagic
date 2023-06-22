@@ -50,6 +50,7 @@ function setup(){
   
   //layout
   imageMode(CENTER); //draws the image from center coordinates instead of corner
+  angleMode(RADIANS);
   textAlign(CENTER, CENTER); //aligns the text to the center horizontally, and to the bottom vertically
   // textFont(font);
   noStroke();//removes the outline so the text isn't as thick
