@@ -60,11 +60,13 @@ function draw() {
   tint(cloudColor);
   image(clouds, width/2, height/2, width, height); //using half the value of the dimensions because we're drawing the image from the center of the image, not the corner
   pop();
-  image(pointer, mouseX + 3, mouseY + 5, pointerSize - 5, pointerSize - 5); //so we get a trail of our own pointer, size a little off rn
+  image(pointer, mouseX + 3, mouseY + 5, flock.pointerSize - 5, flock.pointerSize - 5); //so we get a trail of our own pointer, size a little off rn
   
   //have the pointers look at the flock and the mouse, update each pointer, and then draw each pointer
   let mousePos = createVector(mouseX, mouseY);
   flock.update(mousePos);
+  
+  //text updates
   
 }
 

@@ -3,15 +3,15 @@ class Flock{
     //variables for storing and adjusting flocking options
     this.flockParams = {
       perceptionRadius: 100, //how close is considered in-flock
-      maxSpeed: 20, //speed of movement
-      maxForce: 0.02, //speed of change to movement
+      maxSpeed: 50, //speed of movement
+      maxForce: 0.01, //speed of change to movement
       desiredSeparation: this.pointerSize * 2, //how far apart should they want to be
-      separationBias: 10, //how much they should want to be apart
+      separationBias: 20, //how much they should want to be apart
       alignmentBias: 1.5, //how much they should want to move in the same direction
       cohesionBias: 0.4, //how much they should want to be close together
       seekBias: 1, //how much they should want to follow the mouse
       flockSize: 12, //quantity of pointers
-      trailAmount: 20, //the transparency of the background (adds trail)
+      trailAmount: .05, //the transparency of the background (adds trail)
     } || _flockParams;
     
     this.flock = []; //the array of all pointers in the flock
