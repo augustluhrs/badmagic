@@ -8,21 +8,22 @@
 //  VARIABLES
 //
 
-
+let flock; //holds the stuff flying around the mouse/screen
 
 //
 //  ASSET LOAD
 //
 
+let pointer; //the image of the mouse pointer
 let clouds; //the loaded background image
 let cloudColor; //stores the color we're tinting the clouds
 let font; // the custom font
 
 function preload() {
+  pointer = loadImage("assets/images/pointer.png");
   clouds = loadImage("assets/images/clouds.jpg");
   font = loadFont("assets/fonts/MochiyPopOne-Regular.ttf");
 }
-
 
 //
 //  MAIN
@@ -37,22 +38,16 @@ function setup(){
   textFont(font);
   noStroke();//removes the outline so the text isn't as thick
   colorMode(HSB);
-
-  cloudColor = color("#93a808"); //idk i love this color
-  cloudColor.setAlpha(flockParams.trailAmount); //adding transparency so we get some pointer trails when draw() loops
   
-  //create the flock
-  for(i = 0; i < flockParams.flockSize; i++){
-    let boidSize = random(pointerSize - 8, pointerSize + 8); //random size for each pointer
-    let boidPos = createVector(random(0, width), random(0, height)); //storing position in a 2D Vector, TODO: use normalized (between 0-1) values for X and Y position so it scales to diff screen sizes
-    let boidSpeed = random(-5, 5) + flockParams.maxSpeed; //slight variation in speed;
-    
-    flock.push(new Boid(boidSize, boidPos, boidSpeed, flockParams));
-  }
-  flockSize = flock.length;
+  //create flock array
+  flock = new Flock();
+  
+  //set cloud tint
+  cloudColor = color("#93a808"); //idk i love this color
+  cloudColor.setAlpha(flock.flockParams.trailAmount); //adding transparency so we get some pointer trails when draw() loops
   
   //font scale 
-  textSize(sliderWidth/8); 
+  textSize(40); 
 } 
 
 //
@@ -64,80 +59,13 @@ function draw() {
   push(); //isolates the changes to just whatever comes before pop()
   tint(cloudColor);
   image(clouds, width/2, height/2, width, height); //using half the value of the dimensions because we're drawing the image from the center of the image, not the corner
-
-  
   pop();
   image(pointer, mouseX + 3, mouseY + 5, pointerSize - 5, pointerSize - 5); //so we get a trail of our own pointer, size a little off rn
   
   //have the pointers look at the flock and the mouse, update each pointer, and then draw each pointer
   let mousePos = createVector(mouseX, mouseY);
-
-  for (let boid of flock){
-    boid.flock(flock, mousePos);
-  }
-  push();
-  stroke(0);
-  for (let boid of flock){
-    boid.update();
-    strokeWeight(boid.size/8);
-    boid.show();
-    // push();
-    // tint(boid.color);
-    // image(pointer, boid.pos.x, boid.pos.y, boid.size, boid.size);
-    // pop();
-  }
-  pop();
+  flock.update(mousePos);
   
-  // labels for the sliders -- layout super weird rn
-  push();
-  fill(0);
-  text("SEPARATION", (sliderWidth/4)+(sliderWidth/2), height - (height/13));
-  text("ALIGNMENT", (width/sliders.length)+(sliderWidth/4)+(sliderWidth/2), height - (height/13));
-  text("COHESION", ((width/sliders.length)*2)+(sliderWidth/4)+(sliderWidth/2), height - (height/13));
-  text("MAX SPEED", ((width/sliders.length)*3)+(sliderWidth/4)+(sliderWidth/2), height - (height/13));
-  text("MAX FORCE", ((width/sliders.length)*4)+(sliderWidth/4)+(sliderWidth/2), height - (height/13));
-  text("MOUSE SEEK", ((width/sliders.length)*5)+(sliderWidth/4)+(sliderWidth/2), height - (height/13));
-  text("FLOCK SIZE", ((width/sliders.length)*6)+(sliderWidth/4)+(sliderWidth/2), height - (height/13));
-  text("TRAIL FADE", ((width/sliders.length)*7)+(sliderWidth/4)+(sliderWidth/2), height - (height/13));
-  pop();
-}
-
-function updateFlock(){
-  flockParams.flockSize = flockSlider.value();
-  if (flockParams.flockSize < flockSize){
-    //if decreasing quantity, remove pointers from the flock
-    flock = flock.slice(0, flockParams.flockSize);
-    flockSize = flock.length;
-  } else if (flockParams.flockSize > flockSize){
-    //if increasing quantity, add new random pointers to the flock
-    for(i = 0; i < flockParams.flockSize; i++){
-      let boidSize = random(pointerSize - 10, pointerSize + 8); //random size for each pointer
-      let boidPos = createVector(random(0, width), random(0, height)); //storing position in a 2D Vector, TODO: use normalized (between 0-1) values for X and Y position so it scales to diff screen sizes
-      let boidSpeed = random(-5, 5) + flockParams.maxSpeed; //slight variation in speed;
-
-      flock.push(new Boid(boidSize, boidPos, boidSpeed, flockParams));
-    }
-    flockSize = flock.length;
-  }
-  // updateParams();//needed?
-}
-function updateParams(){ //anytime a slider value is changed, update all the pointers
-  flockParams.separationBias = separationSlider.value();
-  flockParams.alignmentBias = alignmentSlider.value();
-  flockParams.cohesionBias = cohesionSlider.value();
-  flockParams.maxSpeed = speedSlider.value();
-  flockParams.maxForce = forceSlider.value();
-  flockParams.seekBias = seekSlider.value();
-  
-  for (let boid of flock){
-    //prob a better way to do this but w/e, i've had a few cuba libres
-    boid.separationBias = flockParams.separationBias;
-    boid.alignmentBias = flockParams.alignmentBias;
-    boid.cohesionBias = flockParams.cohesionBias;
-    boid.maxSpeed = flockParams.maxSpeed;
-    boid.maxForce = flockParams.maxForce;
-    boid.seekBias = flockParams.seekBias;
-  }
 }
 
 //

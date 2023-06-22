@@ -16,9 +16,6 @@ let server = require('http').createServer(app).listen(port, function(){
 //where we look for files
 app.use(express.static('public'));
 
-//create socket connection
-let io = require('socket.io')(server);
-
 //
 // FUNCTIONS
 //

@@ -1,24 +1,54 @@
 class Flock{
-  constructor(_size, _pointerSize){
+  constructor(_size, _pointerSize, _flockParams){
+    //variables for storing and adjusting flocking options
+    this.flockParams = {
+      perceptionRadius: 100, //how close is considered in-flock
+      maxSpeed: 20, //speed of movement
+      maxForce: 0.02, //speed of change to movement
+      desiredSeparation: this.pointerSize * 2, //how far apart should they want to be
+      separationBias: 10, //how much they should want to be apart
+      alignmentBias: 1.5, //how much they should want to move in the same direction
+      cohesionBias: 0.4, //how much they should want to be close together
+      seekBias: 1, //how much they should want to follow the mouse
+      flockSize: 12, //quantity of pointers
+      trailAmount: 20, //the transparency of the background (adds trail)
+    } || _flockParams;
+    
     this.flock = []; //the array of all pointers in the flock
-    this.flockSize; //the quantity of pointers in the flock
-    this.pointerSize = 15; //more or less exact size of my pointer, could fluctuate randomly
+    this.flockSize = 0; //the quantity of pointers in the flock
+    this.pointerSize = _pointerSize || 15; //more or less exact size of my pointer, could fluctuate randomly
 
-//variables for storing and adjusting flocking options
-let flockParams = {
-  perceptionRadius: 100, //how close is considered in-flock
-  maxSpeed: 20, //speed of movement
-  maxForce: 0.02, //speed of change to movement
-  desiredSeparation: pointerSize * 2, //how far apart should they want to be
-  separationBias: 10, //how much they should want to be apart
-  alignmentBias: 1.5, //how much they should want to move in the same direction
-  cohesionBias: 0.4, //how much they should want to be close together
-  seekBias: 1, //how much they should want to follow the mouse
-  flockSize: 12, //quantity of pointers
-  trailAmount: 20, //the transparency of the background (adds trail)
-}
-    return 
+    
+    
+    //create the flock
+    for(let i = 0; i < this.flockParams.flockSize; i++){
+      let boidSize = random(this.pointerSize - 8, this.pointerSize + 8); //random size for each pointer
+      let boidPos = createVector(random(0, width), random(0, height)); //storing position in a 2D Vector, TODO: use normalized (between 0-1) values for X and Y position so it scales to diff screen sizes
+      let boidSpeed = random(-5, 5) + this.flockParams.maxSpeed; //slight variation in speed;
+
+      this.flock.push(new Boid(boidSize, boidPos, boidSpeed, this.flockParams));
+    }
+    this.flockSize = this.flock.length;
+    
   }  
+  update(_mousePos){
+    for (let boid of this.flock){
+      boid.flock(this.flock, _mousePos);
+    }
+
+    push();
+    stroke(0);
+    for (let boid of this.flock){
+      boid.update();
+      strokeWeight(boid.size/8);
+      boid.show();
+      // push();
+      // tint(boid.color);
+      // image(pointer, boid.pos.x, boid.pos.y, boid.size, boid.size);
+      // pop();
+    }
+    pop();
+  }
 }
 
 class Boid{
