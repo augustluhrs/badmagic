@@ -37,7 +37,7 @@ class Button{
 
   wiggle(){
     for (let i = 0; i < this.vertices.length; i++){
-      this.vertices[i] += random(-2, 2);
+      this.vertices[i] += random(-1, 1);
     }
     // this.label.size += random(-1,1);
     this.label.rot += random(-0.01, 0.01);
