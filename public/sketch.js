@@ -72,7 +72,7 @@ function setup(){
   cloudColor.setAlpha(flock.flockParams.trailAmount); //adding transparency so we get some pointer trails when draw() loops
   
   //setup the title characters
-  let titles = ["GLITCH", "GALA"];
+  let titles = ["GLITCH", "GALA", "", "", "", "", "", "", "", ""]; //empty strings just silly way of spacing
   title = new Title(titles, fonts, fontSize);
 
   //setup the triangle button
