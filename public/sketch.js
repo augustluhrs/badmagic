@@ -203,6 +203,7 @@ function clickInfo(index){
     }
     isInfoBoxUp = !isInfoBoxUp
 }
+
 function makeInfo(title, performers){
   let s_info;
    let s_div;
