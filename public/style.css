@@ -35,3 +35,11 @@ program {
   background-color: white;
   color: rgb(108,112,45);
 }
+
+.sinfo {
+  border-radius: 24px;
+}
+
+.performer {
+  background-color: grey;
+}

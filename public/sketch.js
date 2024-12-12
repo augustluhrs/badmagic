@@ -28,7 +28,7 @@ let sections = [//could use tdTable csv, but fine with doing by hand for now
 let buttons = [];
 let info, playlist;
 let testInfo;
-
+let isInfoBoxUp = false;
 //
 //  ASSET LOAD
 //
@@ -105,16 +105,17 @@ function setup(){
     s.size(width * .75, program.height / sections.length);
     s.style("font-size", `${width * 0.05}px`);
     s.style("float", (random() < 0.5) ? "right" : "left");
-    s.mousePressed(()=>{
-      //don't judge me, im doing this fast
-      
-    })
+    s.mousePressed(clickInfo.bind(s));
     
     
     // s.style("float", (index < 6) ? "right" : "left")
     // s.position(random(0, program.width - s.width), )
-    buttons.push(s);
+    buttons.push([s, makeInfo(section[0],section[1])]);
     // index++;
+  }
+  
+  for (let sectionthingidk of buttons){
+    sectionthingidk[1].hide();
   }
   
   info = createButton("What???").class("buttons");
@@ -184,15 +185,28 @@ function mousePressed(){
 //
 //  MISC FUNCTIONS
 //
-function makeInfo(title){
+
+function clickInfo(button){
+  console.log(button);
+    if (isInfoBoxUp){
+      for (let button of buttons){
+        button[1].hide();
+      }
+    } else {
+      button.show();
+    }
+    isInfoBoxUp = !isInfoBoxUp
+}
+function makeInfo(title, performers){
   let s_info;
    let s_div;
- for (let section of sections){
-   //shhhh
-   if (section[0] = title){
-     s_info = section[1]
-   }
- }
+ // for (let section of sections){
+ //   //shhhh
+ //   if (section[0] = title){
+ //     s_info = section[1]
+ //   }
+ // }
+  s_info = performers;
   s_div = createDiv().id(`${title}`).class('sinfo');
   s_div.size(program.width * 0.6, program.height * 0.6);
   s_div.position(program.width *.2, program.height * 0.2);
@@ -200,9 +214,9 @@ function makeInfo(title){
   for (let performer of Object.keys(s_info)){
     let p = createDiv(performer).parent(s_div).class('performer');
     if (s_info[performer] != null){
-      
+      p.style("color", "blue");
       p.mousePressed(()=>{
-        
+        window.location.assign(`https://instagram.com/${s_info[performer]}`);
       })
     } else {
       p.style("color", "black");
