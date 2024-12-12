@@ -7,24 +7,23 @@
 //
 //  VARIABLES
 //
-
+let canvas, program;
 let flock; //holds the stuff flying around the mouse/screen
 let title; //holds all the characters in the title
 let button; //reference to the triangle button
 let sections = [//could use tdTable csv, but fine with doing by hand for now
   ["Do You Like Me?", {Sujin: "sujinn.kim", Sydney: "sydneybenj", Maggie: "m7_xiu"}],
   ["Granny's Got Game", {Sam: "smillerz04", Sofia: null}],
-  ["Bluephoria", {Sujin: "sujinn.kim", Sydney: "sydneybenj", Maggie: "m7_xiu"}],
+  ["Bluephoria", {BonBon: "yuqiao517", Leilah: "leilahelazizi", Sevin: "wetbutt4"}],
   ["Unidentified Dance Engine", {Parth: "parths_sitcom", Annelise: "anneliiselee"}],
   ["⦿ ⦿", {Ruiqi: "ricciii_liu", Ting: "tinggg_studio", Luna: "luna_feng_922"}],
-  ["AguaViva", {Sujin: "sujinn.kim", Sydney: "sydneybenj", Maggie: "m7_xiu"}],
+  ["AguaViva", {Huaijin: "huaijin__li", Aline: null, Sarah: null}],
   ["Inkspire", {Claire: null, Jean: null, Xiangyi: null}],
   ["Hole in the Wall", {Helena: null, Michelle: "mrizalde03", Ynes: null}],
   ["Partycles", {Junha: null, Jack: null, Rudy: "xx_takawaka_xx"}], //jackflorian baldtoad
-  ["Fairfax Elevator", {Tyra: "iamtyrahughes", Thomas: "thomas.jaquess"}],
-  ["The Ride of Your Life", {Sujin: "sujinn.kim", Sydney: "sydneybenj", Maggie: "m7_xiu"}],
-  ["Beth (The Fountain)", {Sujin: "sujinn.kim", Sydney: "sydneybenj", Maggie: "m7_xiu"}],
-  
+  ["Fairfax Elevator", {Tyra: "iamtyrahughes", Thomas: "thomas.jaquess", Kally: "kallyisart"}],
+  ["The Ride of Your Life", {Lucas: null, Max: null}],
+  ["Beth (The Fountain)", {Ace: null, Mia: null}], //check
 ]; 
 
 //
@@ -65,7 +64,7 @@ function preload() {
 //
 
 function setup(){
-  createCanvas(windowWidth, windowHeight); //TODO better way of ensuring scrollbars don't show up
+  canvas = createCanvas(windowWidth, windowHeight); //TODO better way of ensuring scrollbars don't show up
   
   //layout
   imageMode(CENTER); //draws the image from center coordinates instead of corner
@@ -87,10 +86,17 @@ function setup(){
   cloudColor.setAlpha(flock.flockParams.trailAmount); //adding transparency so we get some pointer trails when draw() loops
   
   //set up the title characters
-  let titles = ["GLITCH", "GALA", "", "", "", "", "", "", "", ""]; //empty strings just silly way of spacing
+  let titles = ["GLITCH", "GALA", "", "", "", "", "", "", "", "", "", ""]; //empty strings just silly way of spacing
   title = new Title(titles, fonts, fontSize);
   
   //set up the section buttons
+  program = createDiv().class("program");
+  program.size(width * .95, height * .75);
+  program.position(width * 0.025, height * 0.2);
+  program.style("background-color", "#ff00ff")
+  for (let section of sections) {
+    createButton(section[0]).parent(program);
+  }
 
   //setup the triangle button
   /*
