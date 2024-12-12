@@ -11,7 +11,9 @@
 let flock; //holds the stuff flying around the mouse/screen
 let title; //holds all the characters in the title
 let button; //reference to the triangle button
-let sections = [];
+let sections = [//could use tdTable csv, but fine with doing by hand for now
+  ["Do You Like Me?", {Sujin: "sujinn.kim", Sydney: "sydneybenj", Maggie: "m7_xiu"}],
+]; 
 
 //
 //  ASSET LOAD
