@@ -11,6 +11,7 @@
 let flock; //holds the stuff flying around the mouse/screen
 let title; //holds all the characters in the title
 let button; //reference to the triangle button
+let sections = [];
 
 //
 //  ASSET LOAD
@@ -71,9 +72,11 @@ function setup(){
   cloudColor = color("#93a808"); //idk i love this color
   cloudColor.setAlpha(flock.flockParams.trailAmount); //adding transparency so we get some pointer trails when draw() loops
   
-  //setup the title characters
+  //set up the title characters
   let titles = ["GLITCH", "GALA", "", "", "", "", "", "", "", ""]; //empty strings just silly way of spacing
   title = new Title(titles, fonts, fontSize);
+  
+  //set up the section buttons
 
   //setup the triangle button
   /*
@@ -110,7 +113,7 @@ function draw() {
   flock.update(mousePos);
   
   //text updates 
- stroke('#00fffa');
+  stroke('#00fffa');
   fill(255); title.update();
 }
 
