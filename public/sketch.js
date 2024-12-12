@@ -216,9 +216,9 @@ function makeInfo(title, performers){
   s_info = performers;
   s_div = createDiv().id(`${title}`).class('sinfo');
   // s_div.size(program.width * 0.6, program.height * 0.6);
-  s_div.size(width * 0.6, height * 0.6);
+  s_div.size(width * 0.6, height * 0.3);
   
-  s_div.position(width *.4, height * 0.4);
+  s_div.position(width *.2, height * 0.4);
   s_div.style('background-color', "00fffacc");
   for (let performer of Object.keys(s_info)){
     let p = createDiv(performer).parent(s_div).class('performer');
