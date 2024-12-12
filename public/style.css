@@ -35,39 +35,3 @@ program {
   background-color: white;
   color: rgb(108,112,45);
 }
-
-.expandable-button {
-  display: inline-block;
-  position: relative;
-}
-
-.expandable-button input {
-  display: none;
-}
-
-.expandable-button label {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-  text-align: center;
-}
-
-.expandable-button label:hover {
-  background-color: #0056b3;
-}
-
-.expandable-button .hidden-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease, padding 0.3s ease;
-}
-
-.expandable-button input:checked + label + .hidden-content {
-  max-height: 100px; /* Adjust as needed for content height */
-  padding-top: 10px;
-  padding-bottom: 10px;
-}

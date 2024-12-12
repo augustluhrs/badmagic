@@ -27,6 +27,7 @@ let sections = [//could use tdTable csv, but fine with doing by hand for now
 ]; 
 let buttons = [];
 let info, playlist;
+let testInfo;
 
 //
 //  ASSET LOAD
@@ -98,10 +99,16 @@ function setup(){
   // program.style("background-color", "#ff00ff")
   // index = 0;
   for (let section of sections) {
-    let s = createButton(section[0]).parent(program).class("buttons");
+    // let s = createButton(section[0]).parent(program).class("buttons");
+    // let secButt = [];
+    let s = createButton(section[0]).parent(program).class("expandable-button");
     s.size(width * .75, program.height / sections.length);
     s.style("font-size", `${width * 0.05}px`);
     s.style("float", (random() < 0.5) ? "right" : "left");
+    s.mousePressed(()=>{
+      //don't judge me, im doing this fast
+      
+    })
     
     
     // s.style("float", (index < 6) ? "right" : "left")
@@ -115,7 +122,7 @@ function setup(){
   info.size(width * .2, height * .05);
   info.style("font-size", `${width * 0.03}px`);
   info.mousePressed(()=>{
-    window.location = "https://tisch.nyu.edu/collaborative-arts"
+    window.location.assign("https://tisch.nyu.edu/collaborative-arts");
   })
   
   
@@ -124,24 +131,12 @@ function setup(){
   playlist.size(width * .2, height * .05);
   playlist.style("font-size", `${width * 0.03}px`);
   playlist.mousePressed(()=>{
-    window.location = "https://open.spotify.com/playlist/7jMjXeuAD2ctmmHHc8OLfh?si=79d185cfebb94472"
+    window.location.assign("https://open.spotify.com/playlist/7jMjXeuAD2ctmmHHc8OLfh?si=79d185cfebb94472");
   })
   
-  
-  
-
-  //setup the triangle button
-  /*
-  let label = {
-    text: "CLICK ME!",
-    font: kablammo,
-    size: fontSize / 5
-  }
-
-  let buttonPos = createVector(width/2, 4*height/5);
-  let buttonColor = color("#fc85cc");
-  button = new Button(label, "triangle", width/5, buttonPos, buttonColor);
-  */
+  testInfo = createDiv('test button').mousePressed(()=>{
+    window.location.assign("www.google.com");
+  })
 } 
 
 //
@@ -168,6 +163,9 @@ function draw() {
   stroke('#00fffa');
   fill(255); 
   title.update();
+  
+  //silly text info pop up
+  
 }
 
 //
