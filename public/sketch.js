@@ -134,9 +134,9 @@ function setup(){
     window.location.assign("https://open.spotify.com/playlist/7jMjXeuAD2ctmmHHc8OLfh?si=79d185cfebb94472");
   })
   
-  testInfo = createDiv('test button').mousePressed(()=>{
-    window.location.assign("www.google.com");
-  })
+  // testInfo = createDiv('test button').mousePressed(()=>{
+  //   window.location.assign("www.google.com");
+  // })
 } 
 
 //
@@ -194,6 +194,20 @@ function makeInfo(title){
    }
  }
   s_div = createDiv().id(`${title}`).class('sinfo');
-  s_div.size(program.width * 0.6, program.height * 0.6)
+  s_div.size(program.width * 0.6, program.height * 0.6);
+  s_div.position(program.width *.2, program.height * 0.2);
+  s_div.style('background-color', "00fffacc");
+  for (let performer of Object.keys(s_info)){
+    let p = createDiv(performer).parent(s_div).class('performer');
+    if (s_info[performer] != null){
+      
+      p.mousePressed(()=>{
+        
+      })
+    } else {
+      p.style("color", "black");
+    }
+    
+  }
   return s_div;
 }
