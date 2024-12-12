@@ -13,6 +13,18 @@ let title; //holds all the characters in the title
 let button; //reference to the triangle button
 let sections = [//could use tdTable csv, but fine with doing by hand for now
   ["Do You Like Me?", {Sujin: "sujinn.kim", Sydney: "sydneybenj", Maggie: "m7_xiu"}],
+  ["Granny's Got Game", {Sam: "smillerz04", Sofia: null}],
+  ["Bluephoria", {Sujin: "sujinn.kim", Sydney: "sydneybenj", Maggie: "m7_xiu"}],
+  ["Unidentified Dance Engine", {Parth: "parths_sitcom", Annelise: "anneliiselee"}],
+  ["⦿ ⦿", {Ruiqi: "ricciii_liu", Ting: "tinggg_studio", Luna: "luna_feng_922"}],
+  ["AguaViva", {Sujin: "sujinn.kim", Sydney: "sydneybenj", Maggie: "m7_xiu"}],
+  ["Inkspire", {Claire: null, Jean: null, Xiangyi: null}],
+  ["Hole in the Wall", {Helena: null, Michelle: "mrizalde03", Ynes: null}],
+  ["Partycles", {Junha: null, Jack: null, Rudy: "xx_takawaka_xx"}], //jackflorian baldtoad
+  ["Fairfax Elevator", {Tyra: "iamtyrahughes", Thomas: "thomas.jaquess"}],
+  ["The Ride of Your Life", {Sujin: "sujinn.kim", Sydney: "sydneybenj", Maggie: "m7_xiu"}],
+  ["Beth (The Fountain)", {Sujin: "sujinn.kim", Sydney: "sydneybenj", Maggie: "m7_xiu"}],
+  
 ]; 
 
 //
