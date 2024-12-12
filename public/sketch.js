@@ -23,7 +23,7 @@ let sections = [//could use tdTable csv, but fine with doing by hand for now
   ["Partycles", {Junha: null, Jack: null, Rudy: "xx_takawaka_xx"}], //jackflorian baldtoad
   ["Fairfax Elevator", {Tyra: "iamtyrahughes", Thomas: "thomas.jaquess", Kally: "kallyisart"}],
   ["The Ride of Your Life", {Lucas: null, Max: null}],
-  ["Beth (The Fountain)", {Ace: null, Mia: null}], //check
+  ["Beth (The Fountain)", {Ace: "aceharvest.art", Mia: "mia_kandi_james.art"}],
 ]; 
 let buttons = [];
 let info, playlist;
@@ -215,11 +215,15 @@ function makeInfo(title, performers){
  // }
   s_info = performers;
   s_div = createDiv().id(`${title}`).class('sinfo');
-  s_div.size(program.width * 0.6, program.height * 0.6);
-  s_div.position(program.width *.2, program.height * 0.2);
+  // s_div.size(program.width * 0.6, program.height * 0.6);
+  s_div.size(width * 0.6, height * 0.6);
+  
+  s_div.position(width *.4, height * 0.4);
   s_div.style('background-color', "00fffacc");
   for (let performer of Object.keys(s_info)){
     let p = createDiv(performer).parent(s_div).class('performer');
+      p.style("font-size", `${width * 0.1}px`)
+    
     if (s_info[performer] != null){
       p.style("color", "blue");
       p.mousePressed(()=>{

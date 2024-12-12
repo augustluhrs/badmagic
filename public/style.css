@@ -41,5 +41,8 @@ program {
 }
 
 .performer {
+  text-align: center;
+/*   font-size:  */
+  font-family:"fugaz";
   background-color: grey;
 }
