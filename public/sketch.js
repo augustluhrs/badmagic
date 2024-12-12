@@ -97,7 +97,7 @@ function setup(){
   program.size(width * .85, height * .65);
   program.position(width * 0.075, height * 0.225);
   // program.style("background-color", "#ff00ff")
-  // index = 0;
+  let index = 0;
   for (let section of sections) {
     let s = createButton(section[0]).parent(program).class("buttons");
     // let secButt = [];
@@ -105,13 +105,13 @@ function setup(){
     s.size(width * .75, program.height / sections.length);
     s.style("font-size", `${width * 0.05}px`);
     s.style("float", (random() < 0.5) ? "right" : "left");
-    s.mousePressed(clickInfo.bind(s));
+    s.mousePressed(clickInfo.bind(`${index}`));
     
     
     // s.style("float", (index < 6) ? "right" : "left")
     // s.position(random(0, program.width - s.width), )
     buttons.push([s, makeInfo(section[0],section[1])]);
-    // index++;
+    index++; //shhhhh
   }
   
   for (let sectionthingidk of buttons){
@@ -186,14 +186,20 @@ function mousePressed(){
 //  MISC FUNCTIONS
 //
 
-function clickInfo(button){
-  console.log(button);
+function clickInfo(index){
+  let t = index.srcElement.innerText
+  console.log(t); //wtfffffff
     if (isInfoBoxUp){
       for (let button of buttons){
         button[1].hide();
       }
     } else {
-      button.show();
+      for ( let [i, section] of sections.entries()){ //idk
+        if (section[0] == t){
+          console.log(buttons[i][1]);
+          buttons[i][1].show();
+        }
+      }
     }
     isInfoBoxUp = !isInfoBoxUp
 }
