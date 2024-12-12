@@ -1,7 +1,7 @@
 class Title{
   constructor(_strings, _fonts, _fontSize){
     this.title = [];
-    this.timer = 80;
+    this.timer = 40;
     for (let i = 0; i < _strings.length; i++){
       for (let j = 0; j < _strings[i].length; j++){
         let charPos = createVector(width/(_strings[i].length + 3) * (j + 2), (height/(_strings.length + 2) * (i + 1)));

@@ -102,19 +102,16 @@ function draw() {
   pop();
   image(pointer, mouseX + 3, mouseY + 5, flock.pointerSize, flock.pointerSize); //so we get a trail of our own pointer, size a little off rn
   
-  //shape button updates
-  // button.checkHover(mouseX, mouseY);
-  // button.update();
+  //placeholder
+  image(showOrder, width/2, height * .6, width * .85, height * .5);
 
   //have the pointers look at the flock and the mouse, update each pointer, and then draw each pointer
   let mousePos = createVector(mouseX, mouseY);
   flock.update(mousePos);
   
-  //text updates
-  stroke('#00fffa')
-  fill(255);
-  
-  title.update();
+  //text updates 
+ stroke('#00fffa');
+  fill(255); title.update();
 }
 
 //
@@ -122,7 +119,7 @@ function draw() {
 //
 
 function mousePressed(){
-  button.checkBounds(mouseX, mouseY);
+    // tton.checkBounds(mouseX, mouseY);
 }
 
 //
@@ -133,3 +130,4 @@ function mousePressed(){
 //
 //  MISC FUNCTIONS
 //
+20
