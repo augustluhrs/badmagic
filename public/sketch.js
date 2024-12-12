@@ -93,9 +93,9 @@ function setup(){
   program = createDiv().class("program");
   program.size(width * .95, height * .75);
   program.position(width * 0.025, height * 0.2);
-  program.style("background-color", "#ff00ff")
+  // program.style("background-color", "#ff00ff")
   for (let section of sections) {
-    createButton(section[0]).parent(program);
+    createButton(section[0]).parent(program).class("buttons");
   }
 
   //setup the triangle button
@@ -126,7 +126,7 @@ function draw() {
   image(pointer, mouseX + 3, mouseY + 5, flock.pointerSize, flock.pointerSize); //so we get a trail of our own pointer, size a little off rn
   
   //placeholder
-  image(showOrder, width/2, height * .6, width * .85, height * .5);
+  // image(showOrder, width/2, height * .6, width * .85, height * .5);
 
   //have the pointers look at the flock and the mouse, update each pointer, and then draw each pointer
   let mousePos = createVector(mouseX, mouseY);
@@ -134,7 +134,8 @@ function draw() {
   
   //text updates 
   stroke('#00fffa');
-  fill(255); title.update();
+  fill(255); 
+  title.update();
 }
 
 //
