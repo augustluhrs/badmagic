@@ -17,15 +17,19 @@ let button; //reference to the triangle button
 //
 
 let pointer; //the image of the mouse pointer
-let clouds; //the loaded background image
+let poster, posterSquare, posterCenter;
 let cloudColor; //stores the color we're tinting the clouds
 let fonts = []; // the array of custom fonts
 let fontSize;
 let akronim, cherrybomb, eater, griffy, kablammo, mochiy, pressstart, rock3D, rubikIso, rubikMoonrocks, rubikPuddles; //the references to the custom fonts getting loaded
 
 function preload() {
+  poster = loadImage('https://cdn.glitch.global/d01f7cb8-7120-4c82-9d9c-4b8ddeebdb9a/GlitchGala_VerticalPoster.jpg?v=1733970845771');
+  posterSquare = loadImage('https://cdn.glitch.global/d01f7cb8-7120-4c82-9d9c-4b8ddeebdb9a/GlitchGala_Square.jpg?v=1733970851534');
+  posterCenter = loadImage('https://cdn.glitch.global/d01f7cb8-7120-4c82-9d9c-4b8ddeebdb9a/posterCenter.jpg?v=1733971316451');
+  showOrder = loadImage('https://cdn.glitch.global/d01f7cb8-7120-4c82-9d9c-4b8ddeebdb9a/showOrder.png?v=1733970731807');
   pointer = loadImage("assets/images/pointer.png");
-  clouds = loadImage("assets/images/clouds.jpg");
+  // clouds = loadImage("assets/images/clouds.jpg");
   akronim= loadFont("assets/fonts/Akronim-Regular.ttf");
   cherrybomb= loadFont("assets/fonts/CherryBombOne-Regular.ttf");
   eater= loadFont("assets/fonts/Eater-Regular.ttf");
@@ -72,6 +76,7 @@ function setup(){
   title = new Title(titles, fonts, fontSize);
 
   //setup the triangle button
+  /*
   let label = {
     text: "CLICK ME!",
     font: kablammo,
@@ -81,6 +86,7 @@ function setup(){
   let buttonPos = createVector(width/2, 4*height/5);
   let buttonColor = color("#fc85cc");
   button = new Button(label, "triangle", width/5, buttonPos, buttonColor);
+  */
 } 
 
 //
@@ -91,19 +97,23 @@ function draw() {
   // background("#93a808"); //not using background
   push(); //isolates the changes to just whatever comes before pop()
   tint(cloudColor);
-  image(clouds, width/2, height/2, width, height); //using half the value of the dimensions because we're drawing the image from the center of the image, not the corner
+  // image(clouds, width/2, height/2, width, height); //using half the value of the dimensions because we're drawing the image from the center of the image, not the corner
+  image(posterCenter, width/2, height/2, width, height);
   pop();
   image(pointer, mouseX + 3, mouseY + 5, flock.pointerSize, flock.pointerSize); //so we get a trail of our own pointer, size a little off rn
   
   //shape button updates
-  button.checkHover(mouseX, mouseY);
-  button.update();
+  // button.checkHover(mouseX, mouseY);
+  // button.update();
 
   //have the pointers look at the flock and the mouse, update each pointer, and then draw each pointer
   let mousePos = createVector(mouseX, mouseY);
   flock.update(mousePos);
   
   //text updates
+  stroke('#00fffa')
+  fill(255);
+  
   title.update();
 }
 
