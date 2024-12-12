@@ -99,9 +99,9 @@ function setup(){
   // program.style("background-color", "#ff00ff")
   // index = 0;
   for (let section of sections) {
-    // let s = createButton(section[0]).parent(program).class("buttons");
+    let s = createButton(section[0]).parent(program).class("buttons");
     // let secButt = [];
-    let s = createButton(section[0]).parent(program).class("expandable-button");
+    // let s = createButton(section[0]).parent(program).class("expandable-button");
     s.size(width * .75, program.height / sections.length);
     s.style("font-size", `${width * 0.05}px`);
     s.style("float", (random() < 0.5) ? "right" : "left");
@@ -184,4 +184,16 @@ function mousePressed(){
 //
 //  MISC FUNCTIONS
 //
-20
+function makeInfo(title){
+  let s_info;
+   let s_div;
+ for (let section of sections){
+   //shhhh
+   if (section[0] = title){
+     s_info = section[1]
+   }
+ }
+  s_div = createDiv().id(`${title}`).class('sinfo');
+  s_div.size(program.width * 0.6, program.height * 0.6)
+  return s_div;
+}
