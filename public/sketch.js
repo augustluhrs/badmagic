@@ -26,6 +26,7 @@ let sections = [//could use tdTable csv, but fine with doing by hand for now
   ["Beth (The Fountain)", {Ace: null, Mia: null}], //check
 ]; 
 let buttons = [];
+let info, playlist;
 
 //
 //  ASSET LOAD
@@ -92,17 +93,42 @@ function setup(){
   
   //set up the section buttons
   program = createDiv().class("program");
-  program.size(width * .95, height * .75);
-  program.position(width * 0.025, height * 0.225);
+  program.size(width * .85, height * .65);
+  program.position(width * 0.075, height * 0.225);
   // program.style("background-color", "#ff00ff")
+  // index = 0;
   for (let section of sections) {
     let s = createButton(section[0]).parent(program).class("buttons");
     s.size(width * .75, program.height / sections.length);
     s.style("font-size", `${width * 0.05}px`);
-    s.style("float", (index) ? )
+    s.style("float", (random() < 0.5) ? "right" : "left");
+    
+    
+    // s.style("float", (index < 6) ? "right" : "left")
     // s.position(random(0, program.width - s.width), )
     buttons.push(s);
+    // index++;
   }
+  
+  info = createButton("What???").class("buttons");
+  info.position(width * 0.2, height * .9);
+  info.size(width * .2, height * .05);
+  info.style("font-size", `${width * 0.03}px`);
+  info.mousePressed(()=>{
+    window.location = "https://tisch.nyu.edu/collaborative-arts"
+  })
+  
+  
+  playlist = createButton("Playlist").class("buttons");
+  playlist.position(width * 0.6, height * .9);
+  playlist.size(width * .2, height * .05);
+  playlist.style("font-size", `${width * 0.03}px`);
+  playlist.mousePressed(()=>{
+    window.location = "https://open.spotify.com/playlist/7jMjXeuAD2ctmmHHc8OLfh?si=79d185cfebb94472"
+  })
+  
+  
+  
 
   //setup the triangle button
   /*
