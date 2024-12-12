@@ -1,10 +1,9 @@
-/* .sliders {
-  width: '40px';
-} */
-
-/* .labels {
-  font-color: red;
-} */
+@font-face {
+  font-family: 'fugaz';
+  src: url('https://cdn.glitch.global/95373345-559a-40d9-add2-493bde4163c0/fugaz.ttf?v=1710993300443') format('truetype');
+  
+/*   src: url('assets/fonts/fugaz.ttf') format('truetype'); */
+}
 
 html, body {
   margin: 0;
@@ -23,8 +22,9 @@ program {
 /*   background-color: rgb(108,112,45); */
   background-color: #00fffa88;
   color: white;
+/*   float: center; */
   /* font-size: 150%; */
-/*   font-family: "fugaz"; */
+  font-family: "fugaz";
   text-align: center;
   border-radius: 12px;
   transition-duration: 0.4s;

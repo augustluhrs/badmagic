@@ -25,6 +25,7 @@ let sections = [//could use tdTable csv, but fine with doing by hand for now
   ["The Ride of Your Life", {Lucas: null, Max: null}],
   ["Beth (The Fountain)", {Ace: null, Mia: null}], //check
 ]; 
+let buttons = [];
 
 //
 //  ASSET LOAD
@@ -92,10 +93,15 @@ function setup(){
   //set up the section buttons
   program = createDiv().class("program");
   program.size(width * .95, height * .75);
-  program.position(width * 0.025, height * 0.2);
+  program.position(width * 0.025, height * 0.225);
   // program.style("background-color", "#ff00ff")
   for (let section of sections) {
-    createButton(section[0]).parent(program).class("buttons");
+    let s = createButton(section[0]).parent(program).class("buttons");
+    s.size(width * .75, program.height / sections.length);
+    s.style("font-size", `${width * 0.05}px`);
+    s.style("float", (index) ? )
+    // s.position(random(0, program.width - s.width), )
+    buttons.push(s);
   }
 
   //setup the triangle button
