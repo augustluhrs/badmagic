@@ -17,12 +17,14 @@ let sections = [//could use tdTable csv, but fine with doing by hand for now
   ["WRungway Gallery", {Ariel: "am.aaaariel", Florence: "dyaksh5"}],
   ["Dentist", {Zora: "zorazora_1118", Sara: "sarafishinadaze"}],
   ["Chicken", {Katy: "kaidikaty", Jenny: "jieyin_tan111111", Catherine: "caathy_rong"}],
+  // ["INTERMISSION", {FiveMinutes: ""}],
   ["Bodywork | Blood", {Theo: "", Mira: "mira__aiko", Eden: "garden0f3d3n", Kiran: "whereisthewolfstew"}],
   ["Recoil", {Magdalena: "mags_treter"}],
   ["Jellyfish Quest", {Chiara: "chiaratabet", Z: ""}],
   ["Under the Skin of the Earth", {Chuxi: "", Kexin: "", Clover: "cloverzou_1013"}], 
   ["On My Own", {Taryn: "", Hayley: "hayley_brooks_"}],
   ["Out of the Unreal", {Emily: "", Kitty: "", Zora: "zorazora_1118"}],
+  // ["INSTALLATIONS", {In404: "", BetweenTwoSeas: "", d: "", Sam: ""}],
   // ["", {: "", : ""}],
 ]; 
 let buttons = [];
@@ -41,10 +43,11 @@ let fontSize;
 let akronim, cherrybomb, eater, griffy, kablammo, mochiy, pressstart, rock3D, rubikIso, rubikMoonrocks, rubikPuddles; //the references to the custom fonts getting loaded
 
 function preload() {
-  poster = loadImage('https://cdn.glitch.global/d01f7cb8-7120-4c82-9d9c-4b8ddeebdb9a/GlitchGala_VerticalPoster.jpg?v=1733970845771');
-  posterSquare = loadImage('https://cdn.glitch.global/d01f7cb8-7120-4c82-9d9c-4b8ddeebdb9a/GlitchGala_Square.jpg?v=1733970851534');
-  posterCenter = loadImage('https://cdn.glitch.global/d01f7cb8-7120-4c82-9d9c-4b8ddeebdb9a/posterCenter.jpg?v=1733971316451');
-  showOrder = loadImage('https://cdn.glitch.global/d01f7cb8-7120-4c82-9d9c-4b8ddeebdb9a/showOrder.png?v=1733970731807');
+  // poster = loadImage('https://cdn.glitch.global/d01f7cb8-7120-4c82-9d9c-4b8ddeebdb9a/GlitchGala_VerticalPoster.jpg?v=1733970845771');
+  // posterSquare = loadImage('https://cdn.glitch.global/d01f7cb8-7120-4c82-9d9c-4b8ddeebdb9a/GlitchGala_Square.jpg?v=1733970851534');
+  // posterCenter = loadImage('https://cdn.glitch.global/d01f7cb8-7120-4c82-9d9c-4b8ddeebdb9a/posterCenter.jpg?v=1733971316451');
+  // showOrder = loadImage('https://cdn.glitch.global/d01f7cb8-7120-4c82-9d9c-4b8ddeebdb9a/showOrder.png?v=1733970731807');
+  poster = loadImage('assets/images/BadMagic_flyer.png');
   pointer = loadImage("assets/images/pointer.png");
   // clouds = loadImage("assets/images/clouds.jpg");
   akronim= loadFont("assets/fonts/Akronim-Regular.ttf");
@@ -89,13 +92,13 @@ function setup(){
   cloudColor.setAlpha(flock.flockParams.trailAmount); //adding transparency so we get some pointer trails when draw() loops
   
   //set up the title characters
-  let titles = ["BAD", "MAGIC", "", "", "", "", "", "", "", "", "", ""]; //empty strings just silly way of spacing
+  let titles = ["BAD", "MAGIC", "", "", "", "", "", "", "", "", "", "", "", ""]; //empty strings just silly way of spacing
   title = new Title(titles, fonts, fontSize);
   
   //set up the section buttons
   program = createDiv().class("program");
   program.size(width * .85, height * .65);
-  program.position(width * 0.075, height * 0.225);
+  program.position(width * 0.075, height * 0.185);
   // program.style("background-color", "#ff00ff")
   let index = 0;
   for (let section of sections) {
@@ -114,12 +117,26 @@ function setup(){
     index++; //shhhhh
   }
   
+  
+  
+  //installations 
+  installations = createButton("INSTALLATIONS").class("buttons");
+  installations.position(width * .25, height * .85);
+  installations.size(width * .5, height * .05);
+  installations.style("font-size", `${width * 0.05}px`);
+  // installations.mousePressed(()=>{
+  //   //idk toggle display
+  //   isShowingInstallations = true;
+  // })
+  buttons.push([installations, makeInfo("installations", {In404: "", WATER: "", Nicole: "n_colez", Raphael: "boyan5024", Vivian: "vivi_ann1verse", Marian: "", _______: "", InLobby: "", RESURFACING: ""})])
+  installations.mousePressed(clickInfo.bind(`${buttons.length - 1}`));
+
   for (let sectionthingidk of buttons){
     sectionthingidk[1].hide();
   }
-  
+
   info = createButton("What???").class("buttons");
-  info.position(width * 0.2, height * .9);
+  info.position(width * (0.33 /2), height * .92);
   info.size(width * .2, height * .05);
   info.style("font-size", `${width * 0.03}px`);
   info.mousePressed(()=>{
@@ -128,7 +145,7 @@ function setup(){
   
   
   playlist = createButton("Playlist").class("buttons");
-  playlist.position(width * 0.6, height * .9);
+  playlist.position(width * (.8 - (0.33/2)), height * .92);
   playlist.size(width * .2, height * .05);
   playlist.style("font-size", `${width * 0.03}px`);
   playlist.mousePressed(()=>{
@@ -149,7 +166,9 @@ function draw() {
   push(); //isolates the changes to just whatever comes before pop()
   tint(cloudColor);
   // image(clouds, width/2, height/2, width, height); //using half the value of the dimensions because we're drawing the image from the center of the image, not the corner
-  image(posterCenter, width/2, height/2, width, height);
+  // image(posterCenter, width/2, height/2, width, height);
+  //image(img, dx, dy, dWidth, dHeight, sx, sy, [sWidth], [sHeight], [fit], [xAlign], [yAlign])
+  image(poster, width/2, height/2, width, height, .7 * width, .25* height, .5 * width, .4 * height);
   pop();
   image(pointer, mouseX + 3, mouseY + 5, flock.pointerSize, flock.pointerSize); //so we get a trail of our own pointer, size a little off rn
   
@@ -179,6 +198,9 @@ function draw() {
 
 function mousePressed(){
     // button.checkBounds(mouseX, mouseY);
+
+  //idk some sort of installation thing
+
 }
 
 //
@@ -198,11 +220,17 @@ function clickInfo(index){
         button[1].hide();
       }
     } else {
+      instOverride = true;
       for ( let [i, section] of sections.entries()){ //idk
         if (section[0] == t){
           console.log(buttons[i][1]);
           buttons[i][1].show();
+          instOverride = false;
         }
+      }
+      if (instOverride){
+        console.log(buttons[buttons.length -1][1]);
+        buttons[buttons.length -1][1].show();
       }
     }
     isInfoBoxUp = !isInfoBoxUp
@@ -210,7 +238,7 @@ function clickInfo(index){
 
 function makeInfo(title, performers){
   let s_info;
-   let s_div;
+  let s_div;
  // for (let section of sections){
  //   //shhhh
  //   if (section[0] = title){
@@ -221,14 +249,12 @@ function makeInfo(title, performers){
   s_div = createDiv().id(`${title}`).class('sinfo');
   // s_div.size(program.width * 0.6, program.height * 0.6);
   s_div.size(width * 0.6, height * 0.3);
-  
-  s_div.position(width *.2, height * 0.4);
+  s_div.position(width *.2, height * 0.25);
   s_div.style('background-color', "00fffacc");
   for (let performer of Object.keys(s_info)){
     let p = createDiv(performer).parent(s_div).class('performer');
-      p.style("font-size", `${width * 0.1}px`)
-    
-    if (s_info[performer] != null){
+      p.style("font-size", `${width * 0.1}px`);
+    if (s_info[performer] != ""){
       p.style("color", "blue");
       p.mousePressed(()=>{
         window.location.assign(`https://instagram.com/${s_info[performer]}`);
