@@ -1,1 +1,1 @@
-# Glitch Gala 24 Show Program
+# BAD MAGIC 25 Show Program
