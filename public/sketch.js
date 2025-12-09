@@ -12,18 +12,18 @@ let flock; //holds the stuff flying around the mouse/screen
 let title; //holds all the characters in the title
 let button; //reference to the triangle button
 let sections = [//could use tdTable csv, but fine with doing by hand for now
-  ["Do You Like Me?", {Sujin: "sujinn.kim", Sydney: "sydneybenj", Maggie: "m7_xiu"}],
-  ["Granny's Got Game", {Sam: "smillerz04", Sofia: null}],
-  ["Bluephoria", {BonBon: "yuqiao517", Leilah: "leilahelazizi", Sevin: "wetbutt4"}],
-  ["Unidentified Dance Engine", {Parth: "parths_sitcom", Annelise: "anneliiselee"}],
-  ["⦿ ⦿", {Ruiqi: "ricciii_liu", Ting: "tinggg_studio", Luna: "luna_feng_922"}],
-  ["AguaViva", {Huaijin: "huaijin__li", Aline: null, Sarah: null}],
-  ["Inkspire", {Claire: null, Jean: null, Xiangyi: null}],
-  ["Hole in the Wall", {Helena: null, Michelle: "mrizalde03", Ynes: null}],
-  ["Partycles", {Junha: null, Jack: null, Rudy: "xx_takawaka_xx"}], //jackflorian baldtoad
-  ["Fairfax Elevator", {Tyra: "iamtyrahughes", Thomas: "thomas.jaquess", Kally: "kallyisart"}],
-  ["The Ride of Your Life", {Lucas: null, Max: null}],
-  ["Beth (The Fountain)", {Ace: "aceharvest.art", Mia: "mia_kandi_james.art"}],
+  ["Altar", {Lily: "Lilygudas", Oriana: "orianamejer", Sam: ""}],
+  ["Birthday", {Lucia: "iwant2batree111"}],
+  ["WRungway Gallery", {Ariel: "am.aaaariel", Florence: "dyaksh5"}],
+  ["Dentist", {Zora: "zorazora_1118", Sara: "sarafishinadaze"}],
+  ["Chicken", {Katy: "kaidikaty", Jenny: "jieyin_tan111111", Catherine: "caathy_rong"}],
+  ["Bodywork | Blood", {Theo: "", Mira: "mira__aiko", Eden: "garden0f3d3n", Kiran: "whereisthewolfstew"}],
+  ["Recoil", {Magdalena: "mags_treter"}],
+  ["Jellyfish Quest", {Chiara: "chiaratabet", Z: ""}],
+  ["Under the Skin of the Earth", {Chuxi: "", Kexin: "", Clover: "cloverzou_1013"}], 
+  ["On My Own", {Taryn: "", Hayley: "hayley_brooks_"}],
+  ["Out of the Unreal", {Emily: "", Kitty: "", Zora: "zorazora_1118"}],
+  // ["", {: "", : ""}],
 ]; 
 let buttons = [];
 let info, playlist;
@@ -89,7 +89,7 @@ function setup(){
   cloudColor.setAlpha(flock.flockParams.trailAmount); //adding transparency so we get some pointer trails when draw() loops
   
   //set up the title characters
-  let titles = ["GLITCH", "GALA", "", "", "", "", "", "", "", "", "", ""]; //empty strings just silly way of spacing
+  let titles = ["BAD", "MAGIC", "", "", "", "", "", "", "", "", "", ""]; //empty strings just silly way of spacing
   title = new Title(titles, fonts, fontSize);
   
   //set up the section buttons
@@ -157,6 +157,10 @@ function draw() {
   // image(showOrder, width/2, height * .6, width * .85, height * .5);
 
   //have the pointers look at the flock and the mouse, update each pointer, and then draw each pointer
+  if (mouseX < 20 && mouseY < 20) {
+    mouseX = width/2;
+    mouseY = height/2;
+  }
   let mousePos = createVector(mouseX, mouseY);
   flock.update(mousePos);
   
@@ -174,7 +178,7 @@ function draw() {
 //
 
 function mousePressed(){
-    // tton.checkBounds(mouseX, mouseY);
+    // button.checkBounds(mouseX, mouseY);
 }
 
 //
