@@ -47,7 +47,8 @@ function preload() {
   // posterSquare = loadImage('https://cdn.glitch.global/d01f7cb8-7120-4c82-9d9c-4b8ddeebdb9a/GlitchGala_Square.jpg?v=1733970851534');
   // posterCenter = loadImage('https://cdn.glitch.global/d01f7cb8-7120-4c82-9d9c-4b8ddeebdb9a/posterCenter.jpg?v=1733971316451');
   // showOrder = loadImage('https://cdn.glitch.global/d01f7cb8-7120-4c82-9d9c-4b8ddeebdb9a/showOrder.png?v=1733970731807');
-  poster = loadImage('./assets/images/BadMagic_flyer.png');
+  // poster = loadImage('./assets/images/BadMagic_flyer.png');
+  poster = loadImage('https://raw.githubusercontent.com/augustluhrs/badmagic/refs/heads/main/public/assets/images/BadMagic_Flyer.png');
   pointer = loadImage("./assets/images/pointer.png");
   // clouds = loadImage("assets/images/clouds.jpg");
   akronim= loadFont("./assets/fonts/Akronim-Regular.ttf");
