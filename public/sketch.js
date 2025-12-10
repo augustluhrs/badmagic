@@ -12,7 +12,7 @@ let flock; //holds the stuff flying around the mouse/screen
 let title; //holds all the characters in the title
 let button; //reference to the triangle button
 let sections = [//could use tdTable csv, but fine with doing by hand for now
-  ["Altar", {Lily: "Lilygudas", Oriana: "orianamejer", Sam: ""}],
+  ["Altar", {Lily: "Lilygudas", Oriana: "orianamejer", Sam: "woahsxm"}],
   ["After the Screen", {Lucia: "iwant2batree111"}],
   ["WRungway Gallery", {Ariel: "am.aaaariel", Florence: "dyaksh5"}],
   ["Dentist", {Zora: "zorazora_1118", Sara: "sarafishinadaze"}],
@@ -31,6 +31,7 @@ let buttons = [];
 let info, playlist;
 let testInfo;
 let isInfoBoxUp = false;
+let isShowingInstallations = false;
 //
 //  ASSET LOAD
 //
@@ -40,6 +41,7 @@ let poster, posterSquare, posterCenter;
 let cloudColor; //stores the color we're tinting the clouds
 let fonts = []; // the array of custom fonts
 let fontSize;
+let installDiv;
 let akronim, cherrybomb, eater, griffy, kablammo, mochiy, pressstart, rock3D, rubikIso, rubikMoonrocks, rubikPuddles; //the references to the custom fonts getting loaded
 
 function preload() {
@@ -121,16 +123,42 @@ function setup(){
   
   
   //installations 
-  installations = createButton("INSTALLATIONS").class("buttons");
+  installDiv = makeDiv('').id('installDiv');
+  installDiv.size(width * 0.6, height * 0.7);
+  installDiv.position(width *.2, height * 0.15);
+  installDiv.style('background-color', "00fffacc");
+  let t2 = createDiv('Game in Blackbox in Lobby: \n\n RESURFACING \n\n');
+  t2.style("font-size", `${width * 0.12}px`);
+  t2.style("color", "black");
+
+  let t = createDiv('Installation in 404: \n WATER IN TRANSLATION \n').parent('installDiv').class("performer"); 
+  t.style("font-size", `${width * 0.12}px`);
+  t.style("color", "black");
+  
+  waterGroup = {Nicole: "n_colez", Raphael: "boyan5024", Vivian: "vivi_ann1verse", Marian: "mariehschu", _______: ""};
+  for (let performer of Object.keys(waterGroup)){
+    let p = createDiv(performer).parent(s_div).class('performer');
+      p.style("font-size", `${width * 0.1}px`);
+    if (waterGroup[performer] != ""){
+      p.style("color", "blue");
+      p.mousePressed(()=>{
+        window.location.assign(`https://instagram.com/${waterGroup[performer]}`);
+      })
+    } else {
+      p.style("color", "black");
+    }
+  }
+  installations = createB.button("INSTALLATIONS").class("buttons");
   installations.position(width * .25, height * .85);
   installations.size(width * .5, height * .05);
   installations.style("font-size", `${width * 0.05}px`);
-  // installations.mousePressed(()=>{
-  //   //idk toggle display
-  //   isShowingInstallations = true;
-  // })
-  buttons.push([installations, makeInfo("installations", {In404: "", WaterInTranslation: "", Nicole: "n_colez", Raphael: "boyan5024", Vivian: "vivi_ann1verse", Marian: "mariehschu", _______: "", InLobby: "", RESURFACING: ""})])
-  installations.mousePressed(clickInfo.bind(`${buttons.length - 1}`));
+  installations.mousePressed(()=>{
+    //idk toggle display
+    installDiv.show();
+    isShowingInstallations = true;
+  })
+  // buttons.push([installations, makeInfo("installations", {In404: "", WaterInTranslation: "", Nicole: "n_colez", Raphael: "boyan5024", Vivian: "vivi_ann1verse", Marian: "mariehschu", _______: "", InLobby: "", RESURFACING: ""})])
+  // installations.mousePressed(clickInfo.bind(`${buttons.length - 1}`));
 
   for (let sectionthingidk of buttons){
     sectionthingidk[1].hide();
@@ -150,7 +178,7 @@ function setup(){
   playlist.size(width * .2, height * .05);
   playlist.style("font-size", `${width * 0.03}px`);
   playlist.mousePressed(()=>{
-    window.location.assign("https://open.spotify.com/playlist/7jMjXeuAD2ctmmHHc8OLfh?si=79d185cfebb94472");
+    window.location.assign("https://open.spotify.com/playlist/0qwGoxf1UF3ZPhemmfl97j?si=f6e4fe8216e1403a");
   })
   
   // testInfo = createDiv('test button').mousePressed(()=>{
@@ -201,7 +229,13 @@ function mousePressed(){
     // button.checkBounds(mouseX, mouseY);
 
   //idk some sort of installation thing
-
+  if (isShowingInstallations){
+    if ((mouseX < width * 0.2 || mouseX > width * 0.8) && (mouseY < height * 0.2 || mouseY > height * 0.8)){
+      console.log('install close');
+      installDiv.hide();
+      isShowingInstallations = false;
+    }
+  }
 }
 
 //
