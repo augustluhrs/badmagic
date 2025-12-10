@@ -125,7 +125,7 @@ function setup(){
   //installations 
   installDiv = createDiv('').id('installDiv');
   installDiv.size(width * 0.7, height * 0.7);
-  installDiv.position(width *.15, height * 0.15);
+  installDiv.position(width *.15, height * 0.05);
   installDiv.style('background-color', "00fffacc");
   let t2 = createDiv('Game in Blackbox in Lobby: \n\n').parent(installDiv).class("performer");
   t2.style("font-size", `${width * 0.08}px`);
