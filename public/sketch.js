@@ -169,7 +169,7 @@ function draw() {
   // image(clouds, width/2, height/2, width, height); //using half the value of the dimensions because we're drawing the image from the center of the image, not the corner
   // image(posterCenter, width/2, height/2, width, height);
   //image(img, dx, dy, dWidth, dHeight, sx, sy, [sWidth], [sHeight], [fit], [xAlign], [yAlign])
-  image(poster, width/2, height/2, width, height, .7 * width, .25* height, .5 * width, .4 * height);
+  image(poster, width/2, height/2, width, height, .8 * width, .28* height, .5 * width, .4 * height);
   pop();
   image(pointer, mouseX + 3, mouseY + 5, flock.pointerSize, flock.pointerSize); //so we get a trail of our own pointer, size a little off rn
   
