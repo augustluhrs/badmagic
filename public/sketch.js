@@ -13,17 +13,17 @@ let title; //holds all the characters in the title
 let button; //reference to the triangle button
 let sections = [//could use tdTable csv, but fine with doing by hand for now
   ["Altar", {Lily: "Lilygudas", Oriana: "orianamejer", Sam: ""}],
-  ["Birthday", {Lucia: "iwant2batree111"}],
+  ["After the Screen", {Lucia: "iwant2batree111"}],
   ["WRungway Gallery", {Ariel: "am.aaaariel", Florence: "dyaksh5"}],
   ["Dentist", {Zora: "zorazora_1118", Sara: "sarafishinadaze"}],
   ["Chicken", {Katy: "kaidikaty", Jenny: "jieyin_tan111111", Catherine: "caathy_rong"}],
   // ["INTERMISSION", {FiveMinutes: ""}],
-  ["Bodywork | Blood", {Theo: "", Mira: "mira__aiko", Eden: "garden0f3d3n", Kiran: "whereisthewolfstew"}],
+  ["Bodywork | Blood", {Theo: "mx.theolevine", Mira: "mira__aiko", Eden: "garden0f3d3n", Kiran: "whereisthewolfstew"}],
   ["Recoil", {Magdalena: "mags_treter"}],
   ["Jellyfish Quest", {Chiara: "chiaratabet", Z: ""}],
-  ["Under the Skin of the Earth", {Chuxi: "", Kexin: "", Clover: "cloverzou_1013"}], 
+  ["Under the Skin of the Earth", {Chuxi: "sheslackluster", Kexin: "ihoyanisme", Clover: "cloverzou_1013"}], 
   ["On My Own", {Taryn: "", Hayley: "hayley_brooks_"}],
-  ["Out of the Unreal", {Emily: "", Kitty: "", Zora: "zorazora_1118"}],
+  ["Out of the Unreal", {Emily: "universiviaaa", Kitty: "yuyu_ch3n", Zora: "zorazora_1118"}],
   // ["INSTALLATIONS", {In404: "", BetweenTwoSeas: "", d: "", Sam: ""}],
   // ["", {: "", : ""}],
 ]; 
@@ -129,7 +129,7 @@ function setup(){
   //   //idk toggle display
   //   isShowingInstallations = true;
   // })
-  buttons.push([installations, makeInfo("installations", {In404: "", WATER: "", Nicole: "n_colez", Raphael: "boyan5024", Vivian: "vivi_ann1verse", Marian: "", _______: "", InLobby: "", RESURFACING: ""})])
+  buttons.push([installations, makeInfo("installations", {In404: "", WaterInTranslation: "", Nicole: "n_colez", Raphael: "boyan5024", Vivian: "vivi_ann1verse", Marian: "mariehschu", _______: "", InLobby: "", RESURFACING: ""})])
   installations.mousePressed(clickInfo.bind(`${buttons.length - 1}`));
 
   for (let sectionthingidk of buttons){
