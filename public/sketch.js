@@ -18,7 +18,7 @@ let sections = [//could use tdTable csv, but fine with doing by hand for now
   ["Dentist", {Zora: "zorazora_1118", Sara: "sarafishinadaze"}],
   ["Chicken", {Katy: "kaidikaty", Jenny: "jieyin_tan111111", Catherine: "caathy_rong"}],
   // ["INTERMISSION", {FiveMinutes: ""}],
-  ["Bodywork | Blood", {Theo: "mx.theolevine", Mira: "mira__aiko", Eden: "garden0f3d3n", Kiran: "whereisthewolfstew"}],
+  ["Infection", {Theo: "mx.theolevine", Mira: "mira__aiko", Eden: "garden0f3d3n", Kiran: "whereisthewolfstew"}],
   ["Recoil", {Magdalena: "mags_treter"}],
   ["Jellyfish Quest", {Chiara: "chiaratabet", Z: ""}],
   ["Under the Skin of the Earth", {Chuxi: "sheslackluster", Kexin: "ihoyanisme", Clover: "cloverzou_1013"}], 
@@ -130,7 +130,7 @@ function setup(){
   let t2 = createDiv('Game in Blackbox in Lobby: \n\n').parent(installDiv).class("performer");
   t2.style("font-size", `${width * 0.08}px`);
   t2.style("color", "black");
-  let t3 = createDiv('RESURFACING \n\n').parent(installDiv).class("performer");
+  let t3 = createDiv('resurface \n\n').parent(installDiv).class("performer");
   t3.style("font-size", `${width * 0.08}px`);
   t3.style("color", "black");
   let spacer = createDiv(' ~ * ~* ~* * ~ ~*   ~ ~*').parent(installDiv).class("performer");
@@ -139,7 +139,7 @@ function setup(){
   let t = createDiv('Installation in 404: \n').parent(installDiv).class("performer"); 
   t.style("font-size", `${width * 0.08}px`);
   t.style("color", "black");
-  let t4 = createDiv('WATER IN TRANSLATION \n').parent(installDiv).class("performer"); 
+  let t4 = createDiv('Water in Translation\n').parent(installDiv).class("performer"); 
   t4.style("font-size", `${width * 0.08}px`);
   t4.style("color", "black");
   
