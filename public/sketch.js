@@ -123,22 +123,30 @@ function setup(){
   
   
   //installations 
-  installDiv = makeDiv('').id('installDiv');
-  installDiv.size(width * 0.6, height * 0.7);
-  installDiv.position(width *.2, height * 0.15);
+  installDiv = createDiv('').id('installDiv');
+  installDiv.size(width * 0.7, height * 0.7);
+  installDiv.position(width *.15, height * 0.15);
   installDiv.style('background-color', "00fffacc");
-  let t2 = createDiv('Game in Blackbox in Lobby: \n\n RESURFACING \n\n');
-  t2.style("font-size", `${width * 0.12}px`);
+  let t2 = createDiv('Game in Blackbox in Lobby: \n\n').parent(installDiv).class("performer");
+  t2.style("font-size", `${width * 0.08}px`);
   t2.style("color", "black");
+  let t3 = createDiv('RESURFACING \n\n').parent(installDiv).class("performer");
+  t3.style("font-size", `${width * 0.08}px`);
+  t3.style("color", "black");
+  let spacer = createDiv(' ~ * ~* ~* * ~ ~*   ~ ~*').parent(installDiv).class("performer");
+  spacer.style('font-size', `${width * 0.04}px`);
 
-  let t = createDiv('Installation in 404: \n WATER IN TRANSLATION \n').parent('installDiv').class("performer"); 
-  t.style("font-size", `${width * 0.12}px`);
+  let t = createDiv('Installation in 404: \n').parent(installDiv).class("performer"); 
+  t.style("font-size", `${width * 0.08}px`);
   t.style("color", "black");
+  let t4 = createDiv('WATER IN TRANSLATION \n').parent(installDiv).class("performer"); 
+  t4.style("font-size", `${width * 0.08}px`);
+  t4.style("color", "black");
   
-  waterGroup = {Nicole: "n_colez", Raphael: "boyan5024", Vivian: "vivi_ann1verse", Marian: "mariehschu", _______: ""};
+  waterGroup = {Nicole: "n_colez", Raphael: "boyan5024", Vivian: "vivi_ann1verse", Marian: "mariehschu"};
   for (let performer of Object.keys(waterGroup)){
-    let p = createDiv(performer).parent(s_div).class('performer');
-      p.style("font-size", `${width * 0.1}px`);
+    let p = createDiv(performer).parent(installDiv).class('performer');
+      p.style("font-size", `${width * 0.07}px`);
     if (waterGroup[performer] != ""){
       p.style("color", "blue");
       p.mousePressed(()=>{
@@ -148,14 +156,24 @@ function setup(){
       p.style("color", "black");
     }
   }
-  installations = createB.button("INSTALLATIONS").class("buttons");
+  installDiv.hide();
+
+  installations = createButton("INSTALLATIONS").class("buttons");
   installations.position(width * .25, height * .85);
   installations.size(width * .5, height * .05);
   installations.style("font-size", `${width * 0.05}px`);
   installations.mousePressed(()=>{
     //idk toggle display
-    installDiv.show();
-    isShowingInstallations = true;
+    if(isShowingInstallations){
+      console.log('hide');
+      installDiv.hide();
+      isShowingInstallations = false;
+    } else {
+      console.log('show');
+
+      installDiv.show();
+      isShowingInstallations = true;
+    }
   })
   // buttons.push([installations, makeInfo("installations", {In404: "", WaterInTranslation: "", Nicole: "n_colez", Raphael: "boyan5024", Vivian: "vivi_ann1verse", Marian: "mariehschu", _______: "", InLobby: "", RESURFACING: ""})])
   // installations.mousePressed(clickInfo.bind(`${buttons.length - 1}`));
@@ -230,7 +248,9 @@ function mousePressed(){
 
   //idk some sort of installation thing
   if (isShowingInstallations){
-    if ((mouseX < width * 0.2 || mouseX > width * 0.8) && (mouseY < height * 0.2 || mouseY > height * 0.8)){
+    // if ((mouseX < width * 0.25 || mouseX > width * 0.75) || (mouseY < height * 0.3 || mouseY > height * 0.8)){
+    if ((mouseX < width * 0.25 || mouseX > width * 0.75) || (mouseY < height * 0.3)){
+
       console.log('install close');
       installDiv.hide();
       isShowingInstallations = false;
@@ -283,8 +303,8 @@ function makeInfo(title, performers){
   s_info = performers;
   s_div = createDiv().id(`${title}`).class('sinfo');
   // s_div.size(program.width * 0.6, program.height * 0.6);
-  s_div.size(width * 0.6, height * 0.3);
-  s_div.position(width *.2, height * 0.25);
+  s_div.size(width * 0.6, height * 0.1);
+  s_div.position(width *.2, height * 0.4);
   s_div.style('background-color', "00fffacc");
   for (let performer of Object.keys(s_info)){
     let p = createDiv(performer).parent(s_div).class('performer');
